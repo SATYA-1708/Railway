@@ -347,14 +347,31 @@
   left: 0;
   right: 0;
   top: 0;
-  height: 4px;
+  height: 4.5px;
   border-radius: 0.85rem 0.85rem 0 0;
-  background: linear-gradient(90deg, #ff9933 0%, #ff9933 33.3%, #ffffff 33.3%, #ffffff 44%, #138808 44%, #138808 77.6%, #ffffff 77.6%, #ffffff 100%);
+  background: linear-gradient(
+    90deg,
+    #ff9933 0%,
+    #ff9933 33.333%,
+    #ffffff 33.333%,
+    #ffffff 66.666%,
+    #138808 66.666%,
+    #138808 100%
+  );
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
   pointer-events: none;
 }
 @media (prefers-color-scheme: dark) {
   .portal-card-tricolor::before {
-    background: linear-gradient(90deg, #ff9933 0%, #ff9933 33.3%, #f4f7fb 33.3%, #f4f7fb 44%, #138808 44%, #138808 77.6%, #f4f7fb 77.6%, #f4f7fb 100%);
+    background: linear-gradient(
+      90deg,
+      #ff9933 0%,
+      #ff9933 33.333%,
+      #f4f7fb 33.333%,
+      #f4f7fb 66.666%,
+      #138808 66.666%,
+      #138808 100%
+    );
   }
 }
 
@@ -631,14 +648,16 @@
 }
 .gov-band-tricolor {
   display: inline-flex;
-  width: 34px;
-  height: 22px;
+  flex-direction: column;
+  width: 30px;
+  height: 20px;
   border-radius: 3px;
   overflow: hidden;
   border: 1px solid #cfdae8;
   flex-shrink: 0;
+  position: relative;
 }
-.gov-band-tricolor span { flex: 1; }
+.gov-band-tricolor span { flex: 1; width: 100%; }
 .gov-band-tricolor span:nth-child(1) { background: #ff9933; }
 .gov-band-tricolor span:nth-child(2) { background: #ffffff; }
 .gov-band-tricolor span:nth-child(3) { background: #138808; }
@@ -647,11 +666,12 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   transform: translate(-50%, -50%);
   background: #1b56a0;
   border-radius: 50%;
+  pointer-events: none;
 }
 
 /* Fade-in for portal content */
