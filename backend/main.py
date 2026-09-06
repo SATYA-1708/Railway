@@ -117,7 +117,8 @@ async def startup_event():
     except Exception as e:
         logger.warning(f"Could not read model snapshot counts at startup: {e}")
 
-@app.get("/")
+@app.api_route("/", methods=["GET", "HEAD"])
+@app.api_route("/healthz", methods=["GET", "HEAD"])
 def read_root():
     return {
         "service": "RailFlow AI API — Live NTES Engine",
