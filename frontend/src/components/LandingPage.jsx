@@ -40,8 +40,8 @@ import RailwayLoader from './ui/RailwayLoader';
 export default function LandingPage({ onCheckTrain, onStaffLogin: _onStaffLogin, onSelectTrain, trains = [], savedJourneys = [], loading = false }) {
   const [searchMode, setSearchMode] = useState('train'); // 'train' | 'stations'
   const [homeQuery, setHomeQuery] = useState('');
-  const [homeFrom, setHomeFrom] = useState('NEW DELHI');
-  const [homeTo, setHomeTo] = useState('KANPUR');
+  const [homeFrom, setHomeFrom] = useState('');
+  const [homeTo, setHomeTo] = useState('');
   const [homeDate, setHomeDate] = useState(new Date().toISOString().slice(0, 10));
   const [homeError, setHomeError] = useState('');
   const [isSearching, setIsSearching] = useState(false);

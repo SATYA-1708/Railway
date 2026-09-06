@@ -1,11 +1,23 @@
-import React, { useMemo, useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polyline, Tooltip } from 'react-leaflet';
-import { Search, X, Activity, ArrowRight, Train, Navigation, Clock, MapPin } from 'lucide-react';
+import React, { useMemo, useEffect, useState, useRef } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, Polyline, Tooltip, useMap } from 'react-leaflet';
+import { Search, X, Activity, ArrowRight, Train, Navigation, Clock, MapPin, ChevronRight } from 'lucide-react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import RailwayLoader from './ui/RailwayLoader';
+import { REAL_TRAINS_DATABASE } from '../data/realTrainsData';
+import { fetchLiveTrainFromInternet } from '../services/liveRailwayService';
 
 const API_BASE_URL = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE_URL) || 'http://localhost:8000';
+
+function MapPanController({ targetCenter, targetZoom }) {
+  const map = useMap();
+  useEffect(() => {
+    if (targetCenter && targetCenter[0] && targetCenter[1]) {
+      map.flyTo(targetCenter, targetZoom || 7, { duration: 1.2 });
+    }
+  }, [targetCenter, targetZoom, map]);
+  return null;
+}
 
 // Fix for default Leaflet marker icon asset URLs in Vite/Webpack
 delete L.Icon.Default.prototype._getIconUrl;
@@ -101,10 +113,53 @@ export default function LiveTrainMap({ trains = [], selectedTrainNumber = null, 
   const [searchQuery, setSearchQuery] = useState('');
   const [delayFilter, setDelayFilter] = useState('all'); // 'all' | 'ontime' | 'moderate' | 'delayed'
   const [selectedMapTrain, setSelectedMapTrain] = useState(null);
+  const [extraTrains, setExtraTrains] = useState([]);
+  const [mapTarget, setMapTarget] = useState(null);
+  const [isSuggestOpen, setIsSuggestOpen] = useState(false);
+  const searchBoxRef = useRef(null);
 
+  // Close suggestions on outside click
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (searchBoxRef.current && !searchBoxRef.current.contains(e.target)) {
+        setIsSuggestOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Merge provided trains with authentic catalog and dynamic search additions
   const activeTrains = useMemo(() => {
-    return Array.isArray(trains) ? trains : [];
-  }, [trains]);
+    const combined = [];
+    const seen = new Set();
+    
+    (trains || []).forEach(t => {
+      const n = String(t.number || '').replace('#', '').trim();
+      if (n && !seen.has(n)) {
+        seen.add(n);
+        combined.push(t);
+      }
+    });
+
+    extraTrains.forEach(t => {
+      const n = String(t.number || '').replace('#', '').trim();
+      if (n && !seen.has(n)) {
+        seen.add(n);
+        combined.push(t);
+      }
+    });
+
+    REAL_TRAINS_DATABASE.forEach(t => {
+      const n = String(t.number || '').replace('#', '').trim();
+      if (n && !seen.has(n)) {
+        seen.add(n);
+        combined.push(t);
+      }
+    });
+
+    return combined;
+  }, [trains, extraTrains]);
 
   // Fetch full station coordinate database from backend
   useEffect(() => {
@@ -329,6 +384,56 @@ export default function LiveTrainMap({ trains = [], selectedTrainNumber = null, 
     });
   }, [trainMarkers, searchQuery, delayFilter]);
 
+  const searchSuggestions = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return [];
+    return trainMarkers.filter(t => 
+      String(t.number || '').toLowerCase().includes(q) ||
+      String(t.name || '').toLowerCase().includes(q)
+    ).slice(0, 6);
+  }, [searchQuery, trainMarkers]);
+
+  const handleSelectSearchedTrain = (train) => {
+    setSelectedMapTrain(train);
+    if (train.lat && train.lon) {
+      setMapTarget([train.lat, train.lon]);
+    }
+    setSearchQuery(train.name || train.number);
+    setIsSuggestOpen(false);
+  };
+
+  const handleSearchSubmit = async (e) => {
+    if (e) e.preventDefault();
+    const q = searchQuery.trim();
+    if (!q) return;
+
+    // First check in active train markers
+    const found = trainMarkers.find(t => 
+      String(t.number || '').toLowerCase().includes(q.toLowerCase()) ||
+      String(t.name || '').toLowerCase().includes(q.toLowerCase())
+    );
+
+    if (found) {
+      handleSelectSearchedTrain(found);
+      return;
+    }
+
+    // Otherwise fetch live/roster train
+    try {
+      const live = await fetchLiveTrainFromInternet(q);
+      if (live) {
+        setExtraTrains(prev => [live, ...prev]);
+        setSelectedMapTrain(live);
+        if (live.lat && live.lon) {
+          setMapTarget([live.lat, live.lon]);
+        }
+        setIsSuggestOpen(false);
+      }
+    } catch {
+      // Ignore
+    }
+  };
+
   // Floating map HUD & Controls
   return (
     <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-[#0b1524]">
@@ -386,24 +491,64 @@ export default function LiveTrainMap({ trains = [], selectedTrainNumber = null, 
 
       {/* Floating Search & Filters Control Bar */}
       <div className="absolute top-4 right-4 z-[1000] flex flex-col sm:flex-row items-end sm:items-center gap-2 max-w-[calc(100%-2rem)]">
-        {/* Search Input */}
-        <div className="relative w-48 sm:w-56 bg-slate-900/90 backdrop-blur-md rounded-xl border border-slate-700/80 shadow-lg flex items-center">
-          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search train no. or name..."
-            className="w-full bg-transparent text-xs text-white placeholder-slate-400 pl-9 pr-7 py-2 rounded-xl focus:outline-none focus:ring-1 focus:ring-cyan-400"
-            style={{ paddingLeft: '2.25rem' }}
-          />
-          {searchQuery && (
+        {/* Search Input with Autocomplete Dropdown */}
+        <div ref={searchBoxRef} className="relative">
+          <form onSubmit={handleSearchSubmit} className="flex items-center gap-1.5">
+            <div className="relative w-44 sm:w-56 bg-slate-900/90 backdrop-blur-md rounded-xl border border-slate-700/80 shadow-lg flex items-center">
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setIsSuggestOpen(e.target.value.trim().length > 0);
+                }}
+                onFocus={() => {
+                  if (searchQuery.trim().length > 0) setIsSuggestOpen(true);
+                }}
+                placeholder="Search train no. or name..."
+                className="w-full bg-transparent text-xs text-white placeholder-slate-400 pl-9 pr-7 py-2 rounded-xl focus:outline-none focus:ring-1 focus:ring-cyan-400"
+                style={{ paddingLeft: '2.25rem' }}
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => { setSearchQuery(''); setIsSuggestOpen(false); }}
+                  className="absolute right-2.5 top-2.5 text-slate-400 hover:text-white"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
             <button
-              onClick={() => setSearchQuery('')}
-              className="absolute right-2.5 top-2.5 text-slate-400 hover:text-white"
+              type="submit"
+              className="px-2.5 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs rounded-xl shadow-lg transition-all flex items-center gap-1 shrink-0"
             >
-              <X className="w-3.5 h-3.5" />
+              <Search className="w-3.5 h-3.5" /> Search
             </button>
+          </form>
+
+          {/* Autocomplete Dropdown */}
+          {isSuggestOpen && searchSuggestions.length > 0 && (
+            <div className="absolute left-0 right-0 top-full mt-1.5 bg-[#0b1524] border border-cyan-500/30 rounded-xl shadow-2xl z-[1200] overflow-hidden max-h-56 overflow-y-auto divide-y divide-white/10">
+              {searchSuggestions.map((st, idx) => (
+                <button
+                  key={st.number || idx}
+                  type="button"
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    handleSelectSearchedTrain(st);
+                  }}
+                  className="w-full px-3 py-2 text-left text-xs text-slate-200 hover:bg-cyan-500/15 hover:text-white transition-colors flex items-center justify-between group"
+                >
+                  <div className="truncate pr-2">
+                    <span className="font-mono font-bold text-cyan-400 mr-2">#{st.number}</span>
+                    <span className="font-medium text-white">{st.name}</span>
+                  </div>
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-cyan-400 shrink-0" />
+                </button>
+              ))}
+            </div>
           )}
         </div>
 
@@ -515,6 +660,7 @@ export default function LiveTrainMap({ trains = [], selectedTrainNumber = null, 
         scrollWheelZoom={true}
         style={{ height, width: '100%' }}
       >
+        <MapPanController targetCenter={mapTarget} />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"

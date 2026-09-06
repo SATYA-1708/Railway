@@ -9,8 +9,8 @@ export default function PassengerSearch({ trains = [], onSelectTrain = () => {},
   const [searchMode, setSearchMode] = useState('station');
   const [trainQuery, setTrainQuery] = useState('');
   const [trainDate, setTrainDate] = useState(todayIso);
-  const [fromStation, setFromStation] = useState('TADEPALLIGUDEM');
-  const [toStation, setToStation] = useState('BHIMAVARAM');
+  const [fromStation, setFromStation] = useState('');
+  const [toStation, setToStation] = useState('');
   const [travelDate, setTravelDate] = useState(todayIso);
   const [searchError, setSearchError] = useState('');
   const [isSearching, setIsSearching] = useState(false);
