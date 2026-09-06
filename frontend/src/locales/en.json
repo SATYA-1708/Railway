@@ -1,0 +1,42 @@
+{
+  "nav": {
+    "search": "Search Trains",
+    "pnr": "PNR Status",
+    "map": "Live Map",
+    "whatIf": "What-If Sandbox",
+    "staff": "Staff Portal",
+    "login": "Staff Login",
+    "stationDisplay": "Station Display"
+  },
+  "landing": {
+    "title": "Smart Indian Railways Dynamic Forecast",
+    "subtitle": "Real-time AI ETA Engine, Quantile Uncertainty Bounds & Multi-Agent Dispatch Sandbox",
+    "searchPlaceholder": "Enter Train Number or Name (e.g. 20805, 12951)",
+    "trackNow": "Track Live NTES"
+  },
+  "delay": {
+    "onTime": "Running On Time",
+    "delayed": "Delayed",
+    "whyDelayed": "Why is this train delayed?",
+    "speed": "Current Speed",
+    "nextStop": "Next Stop",
+    "expectedEta": "Predicted Dynamic ETA",
+    "confidenceRange": "Quantile Confidence (P10–P90)",
+    "weather": "Route Weather",
+    "fogAhead": "Dense Fog / Low Visibility Ahead"
+  },
+  "staff": {
+    "operations": "Operations Dashboard",
+    "liveMonitoring": "Live Fleet Monitoring",
+    "whatIfSimulator": "What-If Dispatch Sandbox",
+    "analytics": "ML Analytics & Retraining",
+    "platformAlerts": "Platform Clashes & Berthing",
+    "retrainModel": "Retrain ML Engine",
+    "batchInference": "Run 500-Train Batch Benchmark"
+  },
+  "alerts": {
+    "smsSubscribe": "Get SMS / WhatsApp Alerts",
+    "phonePlaceholder": "Enter 10-digit mobile number",
+    "subscribedSuccess": "SMS alerts activated for +91"
+  }
+}

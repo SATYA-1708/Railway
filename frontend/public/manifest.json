@@ -1,0 +1,21 @@
+{
+  "name": "RailFlow AI — Dynamic Train ETA & Real-Time Telemetry",
+  "short_name": "RailFlow AI",
+  "description": "Smart India Hackathon 2026 AI-powered dynamic train arrival forecasts and real-time electronic interlocking telemetry.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#06b6d4",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/vite.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

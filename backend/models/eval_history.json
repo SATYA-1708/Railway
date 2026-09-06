@@ -1,0 +1,58 @@
+[
+  {
+    "timestamp": "2026-09-05 16:27:56 IST",
+    "samples": 13035,
+    "mae": 0.27,
+    "baseline_mae": 1.52,
+    "improvement_pct": 82.1,
+    "r2": 0.9913
+  },
+  {
+    "timestamp": "2026-09-05 16:32:46 IST",
+    "samples": 13060,
+    "mae": 0.25,
+    "baseline_mae": 1.44,
+    "improvement_pct": 82.6,
+    "r2": 0.9912
+  },
+  {
+    "timestamp": "2026-09-05 16:33:27 IST",
+    "samples": 13075,
+    "mae": 0.24,
+    "baseline_mae": 1.43,
+    "improvement_pct": 82.9,
+    "r2": 0.9921
+  },
+  {
+    "timestamp": "2026-09-05 16:34:09 IST",
+    "samples": 13086,
+    "mae": 0.26,
+    "baseline_mae": 1.43,
+    "improvement_pct": 82.1,
+    "r2": 0.9907
+  },
+  {
+    "timestamp": "2026-09-05 16:36:04 IST",
+    "samples": 13102,
+    "mae": 0.26,
+    "baseline_mae": 1.53,
+    "improvement_pct": 82.8,
+    "r2": 0.9901
+  },
+  {
+    "timestamp": "2026-09-05 16:50:20 IST",
+    "samples": 13253,
+    "mae": 0.26,
+    "baseline_mae": 1.57,
+    "improvement_pct": 83.5,
+    "r2": 0.9911
+  },
+  {
+    "timestamp": "2026-09-05 16:50:50 IST",
+    "samples": 13263,
+    "mae": 0.25,
+    "baseline_mae": 1.5,
+    "improvement_pct": 83.1,
+    "r2": 0.9911
+  }
+]

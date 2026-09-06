@@ -1,0 +1,95 @@
+﻿# =========================================================================
+# Node & Frontend Build
+# =========================================================================
+frontend/node_modules/
+node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/.vite/
+*.local
+
+# =========================================================================
+# Python & Backend Virtual Environments
+# =========================================================================
+backend/__pycache__/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environments
+backend/venv/
+backend/.venv/
+backend/env/
+venv/
+.venv/
+env/
+ENV/
+
+# Python Database & Cache
+*.sqlite3
+*.db
+*.db-journal
+backend/railflow.db
+
+# =========================================================================
+# Environment Variables & Secrets
+# =========================================================================
+.env
+.env.*
+!.env.example
+backend/.env
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# =========================================================================
+# IDE & OS Artifacts
+# =========================================================================
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs & Temporary Files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.eslintcache
+
+# Temporary extraction & preview artifacts
+check_preview/
+final_verified_preview/
+sample_preview/
+sih_exact_preview/
+sih_final_preview/
+sample_ppt_dump.txt
+tekathon_dump.txt
+template_full_structure.json
+template_inspect.txt
+shape_map.txt
+slide_pointers_utf8.txt

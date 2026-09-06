@@ -1,0 +1,9 @@
+{
+  "samples": 57600,
+  "valSamples": 11520,
+  "valMaeMin": 0.02,
+  "valBaselineMaeMin": 2.61,
+  "improvementPct": 99.2,
+  "library": "scikit-learn GradientBoostingRegressor",
+  "trainedAt": "2026-09-04T23:02:50"
+}
