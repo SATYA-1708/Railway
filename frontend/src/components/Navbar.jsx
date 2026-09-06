@@ -145,76 +145,18 @@ export default function Navbar({
             onClick={() => onNavigate(isStaffLoggedIn && isStaffPortal ? 'staff-portal' : 'landing')}
             className="flex items-center gap-3.5 select-none shrink-0 group transition-all text-left cursor-pointer"
           >
-            {/* Custom Vande Bharat Aerodynamic Shield */}
-            <div className="relative w-11 h-11 rounded-xl bg-gradient-to-br from-[#07162c] via-[#0f2e54] to-[#1e5899] p-1 shadow-md shadow-blue-950/20 group-hover:shadow-blue-900/30 group-hover:scale-105 transition-all duration-200 border border-white/20 flex items-center justify-center">
-              <svg
-                viewBox="0 0 100 100"
-                className="w-full h-full drop-shadow-sm"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                {/* Speed Grid Rails */}
-                <path d="M12 90 L40 55 M88 90 L60 55" stroke="#38bdf8" strokeWidth="2.5" strokeOpacity="0.4" />
-                <line x1="26" y1="88" x2="74" y2="88" stroke="#ffffff" strokeWidth="2" strokeOpacity="0.3" />
-                <line x1="33" y1="77" x2="67" y2="77" stroke="#ffffff" strokeWidth="1.5" strokeOpacity="0.3" />
-
-                {/* Aerodynamic Bullet Train Body */}
-                <path
-                  d="M50 14 C38 14 30 25 29 44 L27 73 C27 77 30 80 34 80 L66 80 C70 80 73 77 73 73 L71 44 C70 25 62 14 50 14 Z"
-                  fill="url(#navTrainBody)"
-                  stroke="#ffffff"
-                  strokeWidth="1.5"
-                />
-
-                {/* Aerodynamic Roof */}
-                <path
-                  d="M50 16 C41 16 34 24 33 37 L67 37 C66 24 59 16 50 16 Z"
-                  fill="#0f172a"
-                />
-
-                {/* Curved Cockpit Windshield */}
-                <path
-                  d="M33 40 C34 33 40 29 50 29 C60 29 66 33 67 40 L66 49 C61 51 55 52 50 52 C45 52 39 51 34 49 Z"
-                  fill="#030b17"
-                  stroke="#38bdf8"
-                  strokeWidth="1.2"
-                />
-
-                {/* Windshield Reflection */}
-                <path
-                  d="M36 34 C40 31 44 31 49 31 L47 47 C43 47 39 46 36 45 Z"
-                  fill="rgba(255,255,255,0.3)"
-                />
-
-                {/* Saffron & Cyan Racing Stripes */}
-                <path d="M29 56 L71 56 L70 60 L30 60 Z" fill="#ff9933" />
-                <path d="M30 61 L70 61 L69 64 L31 64 Z" fill="#00d2ff" />
-
-                {/* Cowcatcher / Deflector */}
-                <path
-                  d="M34 72 L66 72 L62 79 L38 79 Z"
-                  fill="#091b30"
-                  stroke="#1b56a0"
-                  strokeWidth="1"
-                />
-
-                {/* Twin High-Intensity LED Headlights */}
-                <circle cx="36" cy="68" r="4" fill="#ffffff" stroke="#f59e0b" strokeWidth="1.2" />
-                <circle cx="64" cy="68" r="4" fill="#ffffff" stroke="#f59e0b" strokeWidth="1.2" />
-                <circle cx="36" cy="68" r="2" fill="#38bdf8" />
-                <circle cx="64" cy="68" r="2" fill="#38bdf8" />
-
-                {/* Top Spotlight */}
-                <circle cx="50" cy="22" r="2.5" fill="#38bdf8" />
-                <circle cx="50" cy="22" r="1.2" fill="#ffffff" />
-
-                <defs>
-                  <linearGradient id="navTrainBody" x1="50" y1="14" x2="50" y2="80" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#ffffff" />
-                    <stop offset="0.5" stopColor="#e2e8f0" />
-                    <stop offset="1" stopColor="#94a3b8" />
-                  </linearGradient>
-                </defs>
+            {/* Minimalist Modern Logo Emblem */}
+            <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-[#1b56a0] via-[#16498a] to-[#0c2e59] shadow-sm flex items-center justify-center border border-white/20 group-hover:scale-105 group-hover:shadow-md transition-all duration-200">
+              <svg viewBox="0 0 32 32" className="w-6 h-6 text-white" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {/* Modern Geometric Locomotive Body */}
+                <rect x="7" y="4" width="18" height="20" rx="5" stroke="white" strokeWidth="2" fill="rgba(255,255,255,0.08)" />
+                <path d="M7 13 H25" stroke="white" strokeWidth="1.8" />
+                <path d="M16 4 V13" stroke="white" strokeWidth="1.5" strokeOpacity="0.6" />
+                <circle cx="11.5" cy="18.5" r="1.5" fill="#38bdf8" />
+                <circle cx="20.5" cy="18.5" r="1.5" fill="#38bdf8" />
+                <path d="M11 24 L8 28" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                <path d="M21 24 L24 28" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                <path d="M12 28 H20" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeOpacity="0.7" />
               </svg>
 
               {/* Live Satellite Pulsing Dot */}
@@ -224,11 +166,13 @@ export default function Navbar({
               </span>
             </div>
 
-            {/* Typography */}
+            {/* Typography with uniform letter size */}
             <div className="flex flex-col justify-center">
-              <span className="font-display font-black text-[22px] tracking-tight text-[#0a192f] group-hover:text-[#1b56a0] transition-colors leading-none">
-                Rail<span className="text-[#1b56a0]">Flow</span>
-              </span>
+              <div className="flex items-baseline gap-1.5 leading-none">
+                <span className="font-display font-black text-[22px] tracking-tight text-[#0a192f] group-hover:text-[#1b56a0] transition-colors">
+                  Rail<span className="text-[#1b56a0]">Flow</span> <span className="text-[#1b56a0] font-black">AI</span>
+                </span>
+              </div>
               <p className="text-[10px] font-semibold text-[#576f8f] tracking-[0.05em] mt-1 leading-none font-sans">
                 Dynamic Train ETA Portal
               </p>
