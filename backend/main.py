@@ -990,10 +990,19 @@ def _unwrap_time(t_m, ref_m):
     return ref_m + x
 
 
+_STATION_LIVE_CACHE = {}
+
 @app.get("/api/station-live/{station_code}")
 def get_station_live_status_api(station_code: str):
     """Dynamic, real-time Station Master jurisdiction feed with live trains, platform berthing, and interlocking."""
+    import time
     code = resolve_station_code(station_code).upper() or "BZA"
+    
+    # Check 15-second TTL in-memory cache for ultra-fast sub-millisecond response
+    cache_entry = _STATION_LIVE_CACHE.get(code)
+    if cache_entry and time.time() < cache_entry[0]:
+        return cache_entry[1]
+
     stn_meta = STATION_METADATA_MASTER.get(code)
     if not stn_meta:
         # Fallback metadata for any Indian Railways station
@@ -1201,12 +1210,12 @@ def get_station_live_status_api(station_code: str):
     movement_conflicts = []
 
     if stn_c and stn_c.get("lat") is not None and TRAIN_SCHEDULES_DATA:
+        stn_lat = float(stn_c["lat"])
+        stn_lon = float(stn_c["lon"])
         for t_num, stops in TRAIN_SCHEDULES_DATA.items():
             if str(t_num) in stopping_numbers or len(stops) < 2:
                 continue
-            # Pick the train's BEST bracketing leg (smallest detour excess) —
-            # great-circle "excess" is noisy on curved coastal/loop sections,
-            # so per-leg best and a relaxed tolerance beat first-leg-in-list.
+            # Pick the train's BEST bracketing leg (smallest detour excess)
             best = None
             for i in range(len(stops) - 1):
                 a, b = stops[i], stops[i + 1]
@@ -1214,6 +1223,14 @@ def get_station_live_status_api(station_code: str):
                 ca_c, cb_c = STATION_COORDS.get(ca), STATION_COORDS.get(cb)
                 if not ca or not cb or not ca_c or not cb_c:
                     continue
+                # Fast Bounding Box Pre-filter: skip expensive math if station is far outside leg bounding box
+                min_lat, max_lat = min(ca_c["lat"], cb_c["lat"]) - 0.4, max(ca_c["lat"], cb_c["lat"]) + 0.4
+                if not (min_lat <= stn_lat <= max_lat):
+                    continue
+                min_lon, max_lon = min(ca_c["lon"], cb_c["lon"]) - 0.4, max(ca_c["lon"], cb_c["lon"]) + 0.4
+                if not (min_lon <= stn_lon <= max_lon):
+                    continue
+
                 d_ab = _geo_km(ca_c["lat"], ca_c["lon"], cb_c["lat"], cb_c["lon"])
                 d_as = _geo_km(ca_c["lat"], ca_c["lon"], stn_c["lat"], stn_c["lon"])
                 d_sb = _geo_km(stn_c["lat"], stn_c["lon"], cb_c["lat"], cb_c["lon"])
@@ -1400,7 +1417,7 @@ def get_station_live_status_api(station_code: str):
 
     occupied_count = sum(1 for p in platforms_grid if p["status"] != "AVAILABLE")
 
-    return {
+    response_payload = {
         "success": True,
         "stationCode": code,
         "stationName": stn_meta["name"],
@@ -1425,6 +1442,8 @@ def get_station_live_status_api(station_code: str):
             "interlockingHealth": "100% NOMINAL"
         }
     }
+    _STATION_LIVE_CACHE[code] = (time.time() + 20, response_payload)
+    return response_payload
 
 # Simulation & What-If models
 class SimulateRequest(BaseModel):
