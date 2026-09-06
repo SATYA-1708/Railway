@@ -1049,125 +1049,125 @@ def get_station_live_status_api(station_code: str):
         sta = str(s.get("STA") or "--").strip()
         std = str(s.get("STD") or "--").strip()
         t_meta = TRAINS_DIRECTORY.get(t_num, {})
+        
+        time_str = None
+        if std and std not in ("--", "None"):
+            time_str = std
+        elif sta and sta not in ("--", "None"):
+            time_str = sta
+        else:
+            time_str = t_meta.get("departure") if t_meta.get("from_code") in valid_codes else t_meta.get("arrival")
+
+        if time_str and time_str not in ("--", "None") and ":" in time_str:
+            try:
+                parts = time_str.split(":")
+                h, m = int(parts[0]), int(parts[1])
+                stn_m = h * 60 + m
                 
-                time_str = None
-                if std and std not in ("--", "None"):
-                    time_str = std
-                elif sta and sta not in ("--", "None"):
-                    time_str = sta
+                clean_digits = "".join(filter(str.isdigit, str(t_num)))
+                base_num = int(clean_digits) if clean_digits else 12000
+                
+                # Difference from scheduled time to current time
+                diff_sched = (now_m - stn_m)
+                if diff_sched < -720:
+                    diff_sched += 1440
+                elif diff_sched > 720:
+                    diff_sched -= 1440
+                    
+                # If train was scheduled within the past 90 mins, it is still active/approaching if delayed
+                if 0 <= diff_sched <= 90:
+                    delay = diff_sched + ((base_num % 12) + 2)
                 else:
-                    time_str = t_meta.get("departure") if t_meta.get("from_code") in valid_codes else t_meta.get("arrival")
+                    delay = (base_num % 9) if (base_num % 3 != 0) else 0
+                    
+                is_prem = 1 if any(p in t_meta.get("name", "") for p in ("Rajdhani", "Vande", "Shatabdi", "Duronto", "Jan Shatabdi")) else 0
+                base_spd = 115 if is_prem else (90 if "SF" in t_meta.get("type", "") or "Superfast" in t_meta.get("type", "") else 75)
+                
+                # Execute System-Generated RailFlow ML Engine (GradientBoosting Quantile Regressor)
+                ml_features = {
+                    "delay_min": float(delay),
+                    "speed_kmh": float(base_spd),
+                    "stops_remaining": max(1, min(15, int(diff_sched / 15) if diff_sched > 0 else 3)),
+                    "distance_km": max(15.0, min(350.0, float(diff_sched * 1.2) if diff_sched > 0 else 40.0)),
+                    "weather_code": 0,
+                    "visibility_km": 10.0,
+                    "temperature_c": 28.0,
+                    "is_night": 1 if (now.hour >= 21 or now.hour < 6) else 0,
+                    "is_premium": is_prem,
+                    "elapsed_ratio": 0.65,
+                    "tsr_delay_impact_min": 0.0,
+                    "downstream_congestion_index": 0.25,
+                    "preceding_headway_min": 14.0,
+                    "zone_congestion_factor": 0.22
+                }
+                
+                try:
+                    ml_pred = ml_engine.predict(ml_features)
+                    system_delay = int(round(ml_pred.get("predicted_delay_min", delay)))
+                    ml_attributions = ml_pred.get("feature_attributions", [])
+                except Exception:
+                    system_delay = delay
+                    ml_attributions = []
 
-                if time_str and time_str not in ("--", "None") and ":" in time_str:
-                    try:
-                        parts = time_str.split(":")
-                        h, m = int(parts[0]), int(parts[1])
-                        stn_m = h * 60 + m
-                        
-                        clean_digits = "".join(filter(str.isdigit, str(t_num)))
-                        base_num = int(clean_digits) if clean_digits else 12000
-                        
-                        # Difference from scheduled time to current time
-                        diff_sched = (now_m - stn_m)
-                        if diff_sched < -720:
-                            diff_sched += 1440
-                        elif diff_sched > 720:
-                            diff_sched -= 1440
-                            
-                        # If train was scheduled within the past 90 mins, it is still active/approaching if delayed
-                        if 0 <= diff_sched <= 90:
-                            delay = diff_sched + ((base_num % 12) + 2)
-                        else:
-                            delay = (base_num % 9) if (base_num % 3 != 0) else 0
-                            
-                        is_prem = 1 if any(p in t_meta.get("name", "") for p in ("Rajdhani", "Vande", "Shatabdi", "Duronto", "Jan Shatabdi")) else 0
-                        base_spd = 115 if is_prem else (90 if "SF" in t_meta.get("type", "") or "Superfast" in t_meta.get("type", "") else 75)
-                        
-                        # Execute System-Generated RailFlow ML Engine (GradientBoosting Quantile Regressor)
-                        ml_features = {
-                            "delay_min": float(delay),
-                            "speed_kmh": float(base_spd),
-                            "stops_remaining": max(1, min(15, int(diff_sched / 15) if diff_sched > 0 else 3)),
-                            "distance_km": max(15.0, min(350.0, float(diff_sched * 1.2) if diff_sched > 0 else 40.0)),
-                            "weather_code": 0,
-                            "visibility_km": 10.0,
-                            "temperature_c": 28.0,
-                            "is_night": 1 if (now.hour >= 21 or now.hour < 6) else 0,
-                            "is_premium": is_prem,
-                            "elapsed_ratio": 0.65,
-                            "tsr_delay_impact_min": 0.0,
-                            "downstream_congestion_index": 0.25,
-                            "preceding_headway_min": 14.0,
-                            "zone_congestion_factor": 0.22
-                        }
-                        
-                        try:
-                            ml_pred = ml_engine.predict(ml_features)
-                            system_delay = int(round(ml_pred.get("predicted_delay_min", delay)))
-                            ml_attributions = ml_pred.get("feature_attributions", [])
-                        except Exception:
-                            system_delay = delay
-                            ml_attributions = []
+                # System-generated dynamic forecast arrival time
+                expected_m = (stn_m + system_delay) % 1440
+                
+                # Minutes until arrival from current clock time
+                diff_expected = (expected_m - now_m)
+                if diff_expected < -720:
+                    diff_expected += 1440
+                elif diff_expected > 720:
+                    diff_expected -= 1440
+                    
+                # Train is active/upcoming if expected arrival is between -3 mins (at platform) and +480 mins (next 8 hours)
+                if -3 <= diff_expected <= 480:
+                    seen_trains.add(t_num)
+                    eta_h = (expected_m % 1440) // 60
+                    eta_min = (expected_m % 1440) % 60
+                    eta_str = f"{eta_h:02d}:{eta_min:02d}"
 
-                        # System-generated dynamic forecast arrival time
-                        expected_m = (stn_m + system_delay) % 1440
-                        
-                        # Minutes until arrival from current clock time
-                        diff_expected = (expected_m - now_m)
-                        if diff_expected < -720:
-                            diff_expected += 1440
-                        elif diff_expected > 720:
-                            diff_expected -= 1440
-                            
-                        # Train is active/upcoming if expected arrival is between -3 mins (at platform) and +480 mins (next 8 hours)
-                        if -3 <= diff_expected <= 480:
-                            seen_trains.add(t_num)
-                            eta_h = (expected_m % 1440) // 60
-                            eta_min = (expected_m % 1440) % 60
-                            eta_str = f"{eta_h:02d}:{eta_min:02d}"
+                    pf = (len(upcoming_candidates) % plat_count) + 1
+                    speed = 0 if diff_expected <= 3 else (110 if "Rajdhani" in t_meta.get("name", "") or "Vande" in t_meta.get("name", "") else 85)
+                    status = "BERTHED" if diff_expected <= 3 else ("IN_APPROACH" if diff_expected <= 25 else "SCHEDULED")
 
-                            pf = (len(upcoming_candidates) % plat_count) + 1
-                            speed = 0 if diff_expected <= 3 else (110 if "Rajdhani" in t_meta.get("name", "") or "Vande" in t_meta.get("name", "") else 85)
-                            status = "BERTHED" if diff_expected <= 3 else ("IN_APPROACH" if diff_expected <= 25 else "SCHEDULED")
+                    timeline_full, last_dep, next_up = _enrich_station_train_timeline(t_num, code, now_m, eta_str, system_delay)
 
-                            timeline_full, last_dep, next_up = _enrich_station_train_timeline(t_num, code, now_m, eta_str, system_delay)
-
-                            upcoming_candidates.append({
-                                "number": t_num,
-                                "name": t_meta.get("name", f"Express #{t_num}"),
-                                "type": t_meta.get("type", "Superfast Express"),
-                                "from": t_meta.get("from") or f"Origin ({t_meta.get('from_code', 'ORIG')})",
-                                "to": t_meta.get("to") or f"Destination ({t_meta.get('to_code', 'DEST')})",
-                                "speed": speed,
-                                "currentSpeed": speed,
-                                "delay": system_delay,
-                                "delayMin": system_delay,
-                                "baseDelay": delay,
-                                "baseDelayMin": system_delay,
-                                "sta": sta if sta != "--" else (t_meta.get("arrival") or "--"),
-                                "std": std if std != "--" else (t_meta.get("departure") or "--"),
-                                "scheduledNextArrival": time_str,
-                                "dynamicEta": eta_str,
-                                "dynamicEtd": eta_str if std != "--" else "--",
-                                "assignedPlatform": pf,
-                                "platform": pf,
-                                "diff": diff_expected,
-                                "status": status,
-                                "isLiveNTES": True,
-                                "isYetToStart": False,
-                                "fromStationCode": t_meta.get("from_code"),
-                                "toStationCode": t_meta.get("to_code"),
-                                "predictionSource": "AI ML Engine (Quantile GBDT)",
-                                "mlFactors": ml_attributions,
-                                "block": f"Section Approach PF-{pf}" if status != "BERTHED" else f"PF-{pf} Berth",
-                                "signal": "RED" if status == "BERTHED" else ("YELLOW" if status == "IN_APPROACH" else "GREEN"),
-                                "livePositionSummary": f"Speed: {speed} km/h • AI Forecast at {eta_str}",
-                                "lastStation": f"{last_dep[1]} ({last_dep[0]})" if last_dep else None,
-                                "nextStation": f"{next_up[1]} ({next_up[0]})" if next_up else f"{stn_meta['name']} ({code})",
-                                "routeTimeline": timeline_full
-                            })
-                    except Exception as e:
-                        pass
+                    upcoming_candidates.append({
+                        "number": t_num,
+                        "name": t_meta.get("name", f"Express #{t_num}"),
+                        "type": t_meta.get("type", "Superfast Express"),
+                        "from": t_meta.get("from") or f"Origin ({t_meta.get('from_code', 'ORIG')})",
+                        "to": t_meta.get("to") or f"Destination ({t_meta.get('to_code', 'DEST')})",
+                        "speed": speed,
+                        "currentSpeed": speed,
+                        "delay": system_delay,
+                        "delayMin": system_delay,
+                        "baseDelay": delay,
+                        "baseDelayMin": system_delay,
+                        "sta": sta if sta != "--" else (t_meta.get("arrival") or "--"),
+                        "std": std if std != "--" else (t_meta.get("departure") or "--"),
+                        "scheduledNextArrival": time_str,
+                        "dynamicEta": eta_str,
+                        "dynamicEtd": eta_str if std != "--" else "--",
+                        "assignedPlatform": pf,
+                        "platform": pf,
+                        "diff": diff_expected,
+                        "status": status,
+                        "isLiveNTES": True,
+                        "isYetToStart": False,
+                        "fromStationCode": t_meta.get("from_code"),
+                        "toStationCode": t_meta.get("to_code"),
+                        "predictionSource": "AI ML Engine (Quantile GBDT)",
+                        "mlFactors": ml_attributions,
+                        "block": f"Section Approach PF-{pf}" if status != "BERTHED" else f"PF-{pf} Berth",
+                        "signal": "RED" if status == "BERTHED" else ("YELLOW" if status == "IN_APPROACH" else "GREEN"),
+                        "livePositionSummary": f"Speed: {speed} km/h • AI Forecast at {eta_str}",
+                        "lastStation": f"{last_dep[1]} ({last_dep[0]})" if last_dep else None,
+                        "nextStation": f"{next_up[1]} ({next_up[0]})" if next_up else f"{stn_meta['name']} ({code})",
+                        "routeTimeline": timeline_full
+                    })
+            except Exception as e:
+                pass
                 break
 
     upcoming_candidates.sort(key=lambda x: x["diff"])
