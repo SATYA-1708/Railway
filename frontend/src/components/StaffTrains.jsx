@@ -213,7 +213,7 @@ export default function StaffTrains({ onSelectTrainForEta, onSelectTrainForLive,
                   return (
                     <tr key={stn.code || idx} className={stn.status === 'NEXT' ? 'bg-cyan-950/30 font-bold' : ''}>
                       <td className="py-2.5 px-3 font-medium text-white flex items-center gap-2">
-                        {stn.status === 'NEXT' && <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />}
+                        {stn.status === 'NEXT' && <span className="text-xs select-none animate-pulse">🚆</span>}
                         {stn.name} <span className="text-slate-500 font-mono">({stn.code})</span>
                       </td>
                       <td className="py-2.5 px-3 font-mono text-center text-slate-400">{stn.scheduled || stn.sta || '--'}</td>

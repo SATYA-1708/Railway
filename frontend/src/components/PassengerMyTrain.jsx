@@ -724,16 +724,16 @@ export default function PassengerMyTrain({ train: propTrain, onBackToSearch, onS
                         <div className="relative z-10 flex flex-col items-center shrink-0">
                           {isBoarding ? (
                             <div className="relative flex items-center justify-center">
-                              <div className="w-8 h-8 rounded-full bg-amber-500/20 border-2 border-amber-500 flex items-center justify-center animate-ping absolute" />
-                              <div className="w-7 h-7 rounded-full bg-amber-500 border-2 border-white flex items-center justify-center shadow-lg shadow-amber-500/50">
-                                <span className="text-xs">📍</span>
+                              <div className="w-9 h-9 rounded-full bg-amber-500/20 border-2 border-amber-500 flex items-center justify-center animate-ping absolute" />
+                              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-600 to-amber-400 border-2 border-white flex items-center justify-center shadow-lg shadow-amber-500/50">
+                                <span className="text-sm select-none animate-pulse">🚆</span>
                               </div>
                             </div>
                           ) : isNext ? (
                             <div className="relative flex items-center justify-center">
-                              <div className="w-7 h-7 rounded-full bg-cyan-500/20 border-2 border-cyan-500 flex items-center justify-center animate-pulse absolute" />
-                              <div className="w-6 h-6 rounded-full bg-cyan-600 border-2 border-white flex items-center justify-center text-[10px] text-white font-black shadow-md shadow-cyan-500/30">
-                                🎯
+                              <div className="w-9 h-9 rounded-full bg-cyan-500/20 border-2 border-cyan-500 flex items-center justify-center animate-pulse absolute" />
+                              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-cyan-600 to-[#1b56a0] border-2 border-white flex items-center justify-center shadow-md shadow-cyan-500/40">
+                                <span className="text-sm select-none">🚆</span>
                               </div>
                             </div>
                           ) : isDeparted ? (
@@ -896,13 +896,21 @@ export default function PassengerMyTrain({ train: propTrain, onBackToSearch, onS
 
                       {/* In-Transit Track Segment between Departed Station and Next Station */}
                       {isSegmentActive && !isExpanded && (
-                        <div className="relative pl-1 sm:pl-2 py-2 my-1">
-                          <div className="pl-6 sm:pl-10">
-                            <div className="inline-flex flex-wrap items-center gap-2 bg-gradient-to-r from-[#0d7a56] to-[#0b7da8] text-white px-3 py-1.5 rounded-lg text-xs font-black shadow-md shadow-emerald-500/20 animate-pulse">
-                              <span className="text-base">🚆</span>
+                        <div className="relative pl-1 sm:pl-2 py-3 my-1">
+                          {/* Visual train emoji marker right on the track line axis */}
+                          <div className="absolute left-[13px] sm:left-[29px] top-1/2 -translate-y-1/2 z-20 flex items-center justify-center">
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#0d7a56] to-[#1b56a0] text-white flex items-center justify-center shadow-lg shadow-emerald-600/40 border-2 border-white ring-4 ring-emerald-400/30 animate-bounce">
+                              <span className="text-sm select-none">🚆</span>
+                            </div>
+                          </div>
+                          
+                          {/* Live Track Telemetry Banner */}
+                          <div className="pl-8 sm:pl-12">
+                            <div className="inline-flex flex-wrap items-center gap-2 bg-gradient-to-r from-[#0d7a56] via-[#10567e] to-[#1b56a0] text-white px-3.5 py-1.5 rounded-xl text-xs font-black shadow-lg shadow-emerald-500/20 border border-emerald-400/30">
+                              <span className="text-base animate-pulse">🚂 💨</span>
                               <span>#{train.number} {train.name}</span>
-                              <span className="bg-white text-[#0d7a56] px-2 py-0.5 rounded font-mono text-[10px]">
-                                {train.currentSpeed} km/h (Clear Track)
+                              <span className="bg-white text-[#0d7a56] px-2 py-0.5 rounded font-mono text-[10px] font-black shadow-xs">
+                                {train.currentSpeed || 85} km/h (Clear Track)
                               </span>
                               <span className="text-[11px] font-bold text-emerald-50">
                                 • {train.lastStation ? `Passed ${train.lastStation} (${train.lastStationCode || ''})` : `Moving towards ${nextStn?.name}`}
@@ -969,9 +977,9 @@ export default function PassengerMyTrain({ train: propTrain, onBackToSearch, onS
                                       <div className="relative z-10 flex flex-col items-center shrink-0 w-7 sm:w-8 justify-center">
                                         {isTrainAtThisInter ? (
                                           <div className="relative flex items-center justify-center">
-                                            <div className="w-5 h-5 rounded-full bg-cyan-500/30 border-2 border-cyan-500 animate-ping absolute" />
-                                            <div className="w-4 h-4 rounded-full bg-cyan-600 border-2 border-white flex items-center justify-center shadow-lg shadow-cyan-500/40">
-                                              <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                                            <div className="w-6 h-6 rounded-full bg-cyan-500/30 border-2 border-cyan-500 animate-ping absolute" />
+                                            <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-cyan-600 to-[#1b56a0] border border-white flex items-center justify-center shadow-lg shadow-cyan-500/40">
+                                              <span className="text-xs select-none">🚆</span>
                                             </div>
                                           </div>
                                         ) : isInterPassed ? (

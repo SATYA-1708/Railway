@@ -2,6 +2,8 @@ import React, { useState, useMemo } from 'react';
 import { Search, Train, Navigation, Calendar, MapPin, ArrowRight, Activity, Clock, ShieldCheck, AlertCircle, ChevronRight } from 'lucide-react';
 import { fetchLiveTrainFromInternet, fetchTrainsBetweenStations } from '../services/liveRailwayService';
 import AutocompleteInput from './ui/AutocompleteInput';
+import { REAL_TRAINS_DATABASE } from '../data/realTrainsData';
+import RailwayLoader from './ui/RailwayLoader';
 
 const FEATURED_TRAINS = [
   { num: '20805', name: 'AP Superfast Express', route: 'Visakhapatnam → New Delhi' },
@@ -33,9 +35,6 @@ const SHOWCASE_STOPS = [
   { code: 'BPL', time: '00:05', delay: 3, done: false },
   { code: 'RKP', time: '00:40', delay: 0, done: false },
 ];
-
-import { REAL_TRAINS_DATABASE } from '../data/realTrainsData';
-import RailwayLoader from './ui/RailwayLoader';
 
 export default function LandingPage({ onCheckTrain, onStaffLogin: _onStaffLogin, onSelectTrain, trains = [], savedJourneys = [], loading = false }) {
   const [searchMode, setSearchMode] = useState('train'); // 'train' | 'stations'

@@ -255,7 +255,8 @@ export default function StaffLiveMonitoring({ trains = [], onSelectTrainForDetai
                       stn.status === 'NEXT' ? 'bg-cyan-500/[0.06] border-cyan-500/30' : 'bg-black/40 border-white/10'
                     }`}
                   >
-                    <span className={`${stn.status === 'NEXT' ? 'text-cyan-300 font-bold' : 'text-slate-300'}`}>
+                    <span className={`flex items-center gap-1.5 ${stn.status === 'NEXT' ? 'text-cyan-300 font-bold' : 'text-slate-300'}`}>
+                      {stn.status === 'NEXT' && <span className="text-xs select-none animate-pulse">🚆</span>}
                       {stn.name} <span className="font-mono text-slate-500 text-[10px]">({stn.code})</span>
                     </span>
                     <span className="font-mono text-[11px] text-slate-400">
