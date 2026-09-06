@@ -207,12 +207,11 @@ export default function LandingPage({ onCheckTrain, onStaffLogin: _onStaffLogin,
           </div>
 
           <h1 className="mt-5 text-3xl sm:text-4xl xl:text-[2.6rem] font-display font-bold text-[#14253d] tracking-tight leading-[1.14]">
-            Find your train and know when it will <span className="text-[#1b56a0]">actually arrive</span>.
+            Everything you need for your <span className="text-[#1b56a0]">journey</span>.
           </h1>
 
           <p className="mt-4 text-[15px] text-[#4f6a94] leading-relaxed">
-            Track any train's live position, dynamic delay forecasts and arrival times with zero guesswork.
-            RailFlow connects directly with genuine Indian Railways telemetry.
+            Find your train, follow it live, check your PNR, stay updated on delays, and see what’s ahead — all in one place.
           </p>
 
           {/* Live pipeline strip */}
