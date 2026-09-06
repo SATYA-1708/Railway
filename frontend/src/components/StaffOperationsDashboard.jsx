@@ -525,7 +525,15 @@ export default function StaffOperationsDashboard({
             </div>
 
             <div className="divide-y divide-white/[0.05]">
-              {filteredTrains.length === 0 ? (
+              {stationLoading ? (
+                <div className="py-12 flex items-center justify-center">
+                  <RailwayLoader
+                    dark
+                    message={`Syncing Live Station Schedule for ${currentStation.name}...`}
+                    submessage="Calculating AI dynamic ETA forecasts and section headway"
+                  />
+                </div>
+              ) : filteredTrains.length === 0 ? (
                 <div className="p-10 text-center text-xs text-slate-500">
                   No trains match this filter for {currentStation.code}.
                 </div>

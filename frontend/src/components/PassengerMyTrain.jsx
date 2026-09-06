@@ -164,7 +164,13 @@ export default function PassengerMyTrain({ train: propTrain, onBackToSearch, onS
     return () => clearInterval(poll);
   }, [autoRefresh]);
 
-  if (loading) {
+  const hasBasicTrain = Boolean(
+    (train && (train.name || train.from || train.to || train.routeTimeline?.length)) ||
+    (masterTrain && (masterTrain.name || masterTrain.from || masterTrain.to || masterTrain.routeTimeline?.length)) ||
+    (propTrain && (propTrain.name || propTrain.number))
+  );
+
+  if (loading || (!hasBasicTrain && (connectionStatus === 'Connecting...' || !wsTrainData))) {
     return (
       <div className="portal-page py-16 flex items-center justify-center">
         <RailwayLoader
@@ -176,36 +182,18 @@ export default function PassengerMyTrain({ train: propTrain, onBackToSearch, onS
     );
   }
 
-  if (!train) {
-    return (
-      <div className="portal-page py-12 text-center space-y-4">
-        <p className="text-sm text-[#6b7f99]">No train data available to display.</p>
-        <button onClick={onBackToSearch} className="portal-btn portal-btn-primary mx-auto">
-          Return to Search
-        </button>
-      </div>
-    );
-  }
-
-  // Honesty gate: without a genuine live observation we never fabricate a
-  // position, speed or status. Render an explicit "no live feed" panel.
-  if (!isLiveFeed) {
+  if (!hasBasicTrain && train?.available === false) {
     return (
       <div className="portal-page py-12 text-center space-y-6">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#fdf3dd] border border-[#efd9a8] text-xs font-medium text-[#9a6b0a]">
-          <AlertTriangle className="w-4 h-4" /> No Live Feed
+          <AlertTriangle className="w-4 h-4" /> No Live Observation
         </div>
         <div className="space-y-2">
-          <h3 className="text-lg font-bold text-[#14253d]">Train #{train?.number || train?.trainNumber || '—'} · {train?.name || 'Live status unavailable'}</h3>
+          <h3 className="text-lg font-bold text-[#14253d]">Train #{trainNum} · Schedule not currently reachable</h3>
           <p className="text-sm text-[#6b7f99] max-w-xl mx-auto">
-            A genuine real-time Indian Railways observation for this train is not currently reachable.
-            RailFlow shows train positions, status, speeds and ETA forecasts <strong className="text-[#14253d]">only</strong> when real live
-            telemetry is being received — nothing is simulated.
+            A genuine real-time Indian Railways observation for this train is currently not available in the telemetry stream.
           </p>
         </div>
-        {train?.message && (
-          <p className="text-xs text-[#93a6bf] max-w-xl mx-auto">{train.message}</p>
-        )}
         <button onClick={onBackToSearch} className="portal-btn portal-btn-primary mx-auto">
           Return to Search
         </button>

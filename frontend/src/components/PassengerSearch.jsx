@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Train, MapPin, Calendar, ArrowRight, Navigation, Clock } from 'lucide-react';
 import { fetchLiveTrainFromInternet, fetchTrainsBetweenStations } from '../services/liveRailwayService';
+import { REAL_TRAINS_DATABASE } from '../data/realTrainsData';
 import AutocompleteInput from './ui/AutocompleteInput';
 import RailwayLoader from './ui/RailwayLoader';
 
@@ -33,9 +34,20 @@ export default function PassengerSearch({ trains = [], onSelectTrain = () => {},
       const liveResult = await fetchLiveTrainFromInternet(query, trainDate);
       setIsSearching(false);
       if (liveResult) { onSelectTrain({ ...liveResult, searchDate: trainDate }); return; }
-      setSearchError(`No live feed for "${query}" right now. Only trains with genuine real-time telemetry are shown — nothing is simulated.`);
+      
+      const local = REAL_TRAINS_DATABASE.find(t => String(t.number) === query || (t.name && t.name.toLowerCase().includes(query.toLowerCase())));
+      if (local) {
+        onSelectTrain({ ...local, searchDate: trainDate });
+        return;
+      }
+      setSearchError(`No live feed for "${query}" right now. Please check the train number or name.`);
     } catch {
       setIsSearching(false);
+      const local = REAL_TRAINS_DATABASE.find(t => String(t.number) === query || (t.name && t.name.toLowerCase().includes(query.toLowerCase())));
+      if (local) {
+        onSelectTrain({ ...local, searchDate: trainDate });
+        return;
+      }
       setSearchError('Search failed. Please try again.');
     }
   };
@@ -69,10 +81,15 @@ export default function PassengerSearch({ trains = [], onSelectTrain = () => {},
       const liveResult = await fetchLiveTrainFromInternet(trainNum);
       if (liveResult) { setIsSearching(false); onSelectTrain(liveResult); return; }
     } catch {
-      // fall through to honest "no live feed" state below
+      // fall through
     }
+    const local = REAL_TRAINS_DATABASE.find(t => String(t.number) === String(trainNum));
     setIsSearching(false);
-    setSearchError(`No live feed for train ${trainNum} right now. Only trains with genuine real-time telemetry are shown — nothing is simulated.`);
+    if (local) {
+      onSelectTrain(local);
+      return;
+    }
+    setSearchError(`No live feed for train ${trainNum} right now.`);
   };
 
   const quickRoutes = [

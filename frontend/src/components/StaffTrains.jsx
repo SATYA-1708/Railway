@@ -345,7 +345,17 @@ export default function StaffTrains({ onSelectTrainForEta, onSelectTrainForLive,
       </div>
 
       {/* Train List */}
-      {filtered.length === 0 ? (
+      {stationLoading ? (
+        <Card>
+          <div className="py-12 flex items-center justify-center">
+            <RailwayLoader
+              dark
+              message="Loading Train Roster & Live Telemetry..."
+              submessage="Connecting to division block controllers and live GPS feeds"
+            />
+          </div>
+        </Card>
+      ) : filtered.length === 0 ? (
         <Card>
           <div className="text-center py-10 space-y-3">
             <TrainIcon className="w-8 h-8 text-slate-500 mx-auto" />

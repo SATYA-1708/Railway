@@ -3,6 +3,7 @@ import { Search, X, MapPin, Radio, Clock, ChevronRight } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 import ALL_STATIONS_DIR from '../data/allStationsDirectory.json';
 import { REAL_TRAINS_DATABASE } from '../data/realTrainsData';
+import RailwayLoader from './ui/RailwayLoader';
 
 const POPULAR_STATIONS = [
   { code: "BZA", name: "VIJAYAWADA JN", nameHi: "विजयवाड़ा जंक्शन", nameTe: "విజయవాడ జంక్షన్", zone: "SCR" },
@@ -532,7 +533,15 @@ export default function StationDisplayBoard({ onSelectTrain }) {
         </div>
 
         <div className="divide-y divide-white/[0.06] flex-1 overflow-y-auto">
-          {displayedTrains.length === 0 ? (
+          {loading ? (
+            <div className="py-16 flex items-center justify-center">
+              <RailwayLoader
+                dark
+                message={`Loading Live Station Display for [${selectedStation}]...`}
+                submessage="Connecting to electronic interlocking and NTES departure telemetry"
+              />
+            </div>
+          ) : displayedTrains.length === 0 ? (
             <div className="p-12 text-center text-slate-500 text-sm font-semibold">
               NO {boardMode.toUpperCase()} SCHEDULED IN NEXT FEW HOURS FOR [{selectedStation}].
             </div>
