@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Shield, Lock, User, Train, AlertCircle, ArrowRight, CheckCircle, Key } from 'lucide-react';
 import Card from './ui/Card';
 import Button from './ui/Button';
+import { API_BASE_URL } from '../config';
 
 const DEMO_ACCOUNTS = [
   {
@@ -54,9 +55,7 @@ export default function StaffLogin({ onLoginSuccess, onCancel }) {
         password: password
       };
 
-      const targetUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://127.0.0.1:8000/api/auth/token'
-        : '/api/auth/token';
+      const targetUrl = `${API_BASE_URL}/api/auth/token`;
 
       const res = await fetch(targetUrl, {
         method: 'POST',
@@ -66,7 +65,13 @@ export default function StaffLogin({ onLoginSuccess, onCancel }) {
         body: JSON.stringify(payload)
       });
 
-      const data = await res.json();
+      const text = await res.text();
+      let data = {};
+      try {
+        data = JSON.parse(text);
+      } catch {
+        throw new Error(`Server returned non-JSON response (HTTP ${res.status}). Verify VITE_API_BASE_URL in Vercel.`);
+      }
 
       if (res.ok && data.access_token) {
         localStorage.setItem('railflow_token', data.access_token);
@@ -81,7 +86,7 @@ export default function StaffLogin({ onLoginSuccess, onCancel }) {
         setErrorMessage(data.detail || 'Authentication failed: Invalid operator credentials');
       }
     } catch (err) {
-      setErrorMessage(`Backend connection error: ${err.message}. Please ensure backend is running on port 8000.`);
+      setErrorMessage(`Backend connection error: ${err.message}`);
     } finally {
       setIsLoading(false);
     }
