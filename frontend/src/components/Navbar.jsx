@@ -145,18 +145,30 @@ export default function Navbar({
             onClick={() => onNavigate(isStaffLoggedIn && isStaffPortal ? 'staff-portal' : 'landing')}
             className="flex items-center gap-3.5 select-none shrink-0 group transition-all text-left cursor-pointer"
           >
-            {/* Minimalist Modern Logo Emblem */}
-            <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-[#1b56a0] via-[#16498a] to-[#0c2e59] shadow-sm flex items-center justify-center border border-white/20 group-hover:scale-105 group-hover:shadow-md transition-all duration-200">
-              <svg viewBox="0 0 32 32" className="w-6 h-6 text-white" fill="none" xmlns="http://www.w3.org/2000/svg">
-                {/* Modern Geometric Locomotive Body */}
-                <rect x="7" y="4" width="18" height="20" rx="5" stroke="white" strokeWidth="2" fill="rgba(255,255,255,0.08)" />
-                <path d="M7 13 H25" stroke="white" strokeWidth="1.8" />
-                <path d="M16 4 V13" stroke="white" strokeWidth="1.5" strokeOpacity="0.6" />
-                <circle cx="11.5" cy="18.5" r="1.5" fill="#38bdf8" />
-                <circle cx="20.5" cy="18.5" r="1.5" fill="#38bdf8" />
-                <path d="M11 24 L8 28" stroke="white" strokeWidth="2" strokeLinecap="round" />
-                <path d="M21 24 L24 28" stroke="white" strokeWidth="2" strokeLinecap="round" />
-                <path d="M12 28 H20" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeOpacity="0.7" />
+            {/* Premium Dynamic High-Speed Rail Mark */}
+            <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-[#0c2e59] via-[#1b56a0] to-[#2563eb] shadow-md shadow-blue-900/20 flex items-center justify-center p-2 group-hover:scale-105 group-hover:shadow-lg transition-all duration-200 border border-white/20">
+              <svg viewBox="0 0 48 48" className="w-full h-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {/* Geometric Converging Rails */}
+                <path d="M10 42 L21 16 L27 16 L38 42" stroke="#38bdf8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.6" />
+                <line x1="14" y1="34" x2="34" y2="34" stroke="white" strokeWidth="2" strokeLinecap="round" opacity="0.5" />
+                <line x1="18" y1="25" x2="30" y2="25" stroke="white" strokeWidth="2" strokeLinecap="round" opacity="0.7" />
+
+                {/* Sleek Aerodynamic Bullet Train Locomotive */}
+                <path
+                  d="M24 6 C20 6 17.5 12 17.5 22 L17.5 35 C17.5 37.5 20 39 24 39 C28 39 30.5 37.5 30.5 35 L30.5 22 C30.5 12 28 6 24 6 Z"
+                  fill="white"
+                />
+                
+                {/* Cockpit Windshield */}
+                <path d="M19.5 16 C20.5 13.5 22.5 12.5 24 12.5 C25.5 12.5 27.5 13.5 28.5 16 L27.5 21.5 C26 22.5 22 22.5 20.5 21.5 Z" fill="#0b2240" />
+                
+                {/* Saffron & Cyan Racing Stripes */}
+                <path d="M17.5 26 L30.5 26 L30.2 28.5 L17.8 28.5 Z" fill="#ff9933" />
+                <path d="M17.8 29.5 L30.2 29.5 L30 31.5 L18 31.5 Z" fill="#00d2ff" />
+
+                {/* Dual Projector Headlights */}
+                <circle cx="20.5" cy="35" r="1.6" fill="#38bdf8" />
+                <circle cx="27.5" cy="35" r="1.6" fill="#38bdf8" />
               </svg>
 
               {/* Live Satellite Pulsing Dot */}
