@@ -51,16 +51,15 @@ app = FastAPI(
     version="2.0.0"
 )
 
-# CORS: allow the configured frontend origin(s). Local dev default is the Vite
-# dev server. Avoid wildcard-with-credentials, which browsers reject.
-_ALLOWED_ORIGINS = [o.strip() for o in os.environ.get(
-    "ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173"
-).split(",") if o.strip()]
+# Universal CORS: Support Vercel deployments, Render previews, and localhost
+_raw_origins = os.environ.get("ALLOWED_ORIGINS", "*")
+_ALLOWED_ORIGINS = ["*"] if _raw_origins == "*" else [o.strip() for o in _raw_origins.split(",") if o.strip()]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_ALLOWED_ORIGINS,
-    allow_credentials=True,
+    allow_origin_regex=r"https?://.*",
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
