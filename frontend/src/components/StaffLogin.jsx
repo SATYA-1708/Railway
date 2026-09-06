@@ -1,43 +1,22 @@
 import React, { useState } from 'react';
 import {
   Shield, ShieldCheck, Lock, User, Train, AlertCircle,
-  ArrowRight, CheckCircle, Key, Eye, EyeOff, Fingerprint,
+  ArrowRight, CheckCircle, Key, Eye, EyeOff,
 } from 'lucide-react';
 import Card from './ui/Card';
 import Button from './ui/Button';
 import { API_BASE_URL } from '../config';
 
 const DEMO_ACCOUNTS = [
-  {
-    label: 'Station Master',
-    station: 'BZA',
-    zone: 'SCR',
-    id: 'sm_bza',
-    division: 'Vijayawada Division (SCR)',
-    role: 'station_master',
-  },
-  {
-    label: 'Section Controller',
-    station: 'BZA',
-    zone: 'SCR',
-    id: 'controller_scr',
-    division: 'South Central Railway Mainline',
-    role: 'section_controller',
-  },
-  {
-    label: 'Divisional HQ',
-    station: 'NDLS',
-    zone: 'NR',
-    id: 'hq_delhi',
-    division: 'Delhi Division (Northern Railway)',
-    role: 'divisional_hq',
-  },
+  { label: 'Station Master', station: 'BZA', zone: 'SCR', id: 'sm_bza', division: 'Vijayawada Division (SCR)', role: 'station_master' },
+  { label: 'Section Controller', station: 'BZA', zone: 'SCR', id: 'controller_scr', division: 'South Central Railway Mainline', role: 'section_controller' },
+  { label: 'Divisional HQ', station: 'NDLS', zone: 'NR', id: 'hq_delhi', division: 'Delhi Division (Northern Railway)', role: 'divisional_hq' },
 ];
 
 const ROLE_META = {
-  station_master: { label: 'Station Master', dot: 'bg-cyan-400' },
-  section_controller: { label: 'Section Controller', dot: 'bg-violet-400' },
-  divisional_hq: { label: 'Divisional HQ', dot: 'bg-amber-400' },
+  station_master: { dot: 'bg-cyan-400' },
+  section_controller: { dot: 'bg-violet-400' },
+  divisional_hq: { dot: 'bg-amber-400' },
 };
 
 const DEMO_PASSWORD = 'railway123';
@@ -81,9 +60,7 @@ export default function StaffLogin({ onLoginSuccess, onCancel }) {
 
       const res = await fetch(targetUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
 
@@ -121,33 +98,33 @@ export default function StaffLogin({ onLoginSuccess, onCancel }) {
 
         {/* Header */}
         <div className="text-center mb-6 space-y-2.5">
-          <div className="w-12 h-12 rounded-2xl bg-brand-500/10 border border-brand-500/30 flex items-center justify-center mx-auto text-brand-400 glow-soft">
-            <Shield className="w-6 h-6" />
+          <div className="w-11 h-11 rounded-2xl bg-brand-500/10 border border-brand-500/30 flex items-center justify-center mx-auto text-brand-400 glow-soft">
+            <Shield className="w-[22px] h-[22px]" />
           </div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-400">RailFlow AI · Indian Railways</p>
-          <h2 className="text-lg font-bold text-white font-display">Railway Staff &amp; Dispatch Login</h2>
-          <p className="text-[11px] text-slate-400">JWT-secured sign-in · Role-Based Access Control (RBAC)</p>
-
-          {/* Security chips */}
-          <div className="flex flex-wrap items-center justify-center gap-1.5 pt-1">
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-400">RailFlow AI · Indian Railways</p>
+            <h2 className="text-xl font-bold text-white font-display mt-1">Railway Staff &amp; Dispatch Login</h2>
+            <p className="text-[13px] text-slate-400 mt-1">JWT-secured sign-in · Role-Based Access Control (RBAC)</p>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-1.5">
             {['SHA-256 Salted', 'JWT · 8h Expiry', '3 Role Tiers'].map((chip) => (
-              <span key={chip} className="px-2 py-0.5 rounded-md bg-slate-900 border border-slate-800 text-[9px] font-mono text-slate-400">
+              <span key={chip} className="px-2.5 py-1 rounded-md bg-slate-900 border border-slate-800 text-[10px] font-mono text-slate-400">
                 {chip}
               </span>
             ))}
           </div>
         </div>
 
-        {/* 1-Click Demo Accounts */}
+        {/* 1-Click Demo Credentials */}
         <div className="mb-5">
           <div className="flex items-center justify-between mb-2">
-            <span className="flex items-center gap-1.5 text-[10px] font-semibold text-slate-400 uppercase tracking-[0.14em]">
+            <span className="flex items-center gap-1.5 text-[11px] font-bold text-slate-400 uppercase tracking-[0.12em]">
               <Key className="w-3.5 h-3.5 text-cyan-400" /> Quick Demo Credentials
             </span>
-            <span className="text-[9px] text-emerald-400 font-mono">tap to auto-fill</span>
+            <span className="text-[10px] text-emerald-400 font-mono">password: {DEMO_PASSWORD}</span>
           </div>
 
-          <div className="grid grid-cols-3 gap-2">
+          <div className="space-y-2">
             {DEMO_ACCOUNTS.map((acc) => {
               const active = operatorId.trim().toLowerCase() === acc.id;
               const meta = ROLE_META[acc.role];
@@ -156,38 +133,28 @@ export default function StaffLogin({ onLoginSuccess, onCancel }) {
                   key={acc.id}
                   type="button"
                   onClick={() => selectDemoAccount(acc)}
-                  className={`relative p-2.5 rounded-xl text-left border transition-all duration-200 group ${
+                  className={`flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl border text-left transition-all duration-200 ${
                     active
-                      ? 'bg-cyan-500/15 border-cyan-500/60 text-white shadow-lg shadow-cyan-500/10'
-                      : 'bg-slate-900 border-slate-800/80 text-slate-400 hover:text-white hover:border-slate-600'
+                      ? 'bg-cyan-500/15 border-cyan-500/60 text-white'
+                      : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-600 hover:text-white'
                   }`}
                 >
-                  {active && (
-                    <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-                  )}
-                  <div className="flex items-center gap-1.5 mb-1.5">
-                    <span className={`w-1.5 h-1.5 rounded-full ${meta.dot} ${active ? '' : 'opacity-50 group-hover:opacity-100'}`} />
-                    <span className="text-[10px] font-bold tracking-wide truncate">{acc.label}</span>
-                  </div>
-                  <p className="text-[9px] uppercase tracking-[0.14em] text-slate-500 truncate font-mono">{acc.zone} · {acc.station}</p>
-                  <p className="text-[10px] font-mono text-slate-300 truncate mt-0.5">{acc.id}</p>
+                  <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${meta.dot} ${active ? '' : 'opacity-50'}`} />
+                  <span className="text-xs font-semibold truncate flex-1">{acc.label}</span>
+                  <span className="text-[11px] font-mono text-slate-500 truncate">{acc.zone} · {acc.station}</span>
+                  <span className={`text-xs font-mono px-2 py-0.5 rounded-md ${active ? 'bg-cyan-500/20 text-cyan-200' : 'bg-slate-800 text-slate-300'}`}>
+                    {acc.id}
+                  </span>
                 </button>
               );
             })}
           </div>
-
-          {activeAccount && (
-            <p className="mt-2 text-[10px] text-slate-500 flex items-center gap-1.5">
-              <Fingerprint className="w-3 h-3 text-slate-600" />
-              Unlocks with password <code className="text-emerald-400 font-mono">{DEMO_PASSWORD}</code> · Session: {activeAccount.division}
-            </p>
-          )}
         </div>
 
         {/* Divider */}
         <div className="flex items-center gap-3 mb-5">
           <div className="flex-1 h-px bg-gradient-to-r from-transparent via-slate-800 to-transparent" />
-          <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-slate-600">or sign in manually</span>
+          <span className="text-[10px] font-mono uppercase tracking-[0.18em] text-slate-600">or sign in manually</span>
           <div className="flex-1 h-px bg-gradient-to-r from-transparent via-slate-800 to-transparent" />
         </div>
 
@@ -207,9 +174,9 @@ export default function StaffLogin({ onLoginSuccess, onCancel }) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <label htmlFor="operator-id" className="text-[10px] font-semibold text-slate-400 uppercase tracking-[0.14em]">Operator Username</label>
-            <div className="relative flex items-center">
-              <User className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
+            <label htmlFor="operator-id" className="block text-[11px] font-semibold text-slate-400 uppercase tracking-[0.12em]">Operator Username</label>
+            <div className="relative">
+              <User className="w-4 h-4 text-slate-500 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
               <input
                 id="operator-id"
                 value={operatorId}
@@ -217,29 +184,28 @@ export default function StaffLogin({ onLoginSuccess, onCancel }) {
                 required
                 autoComplete="username"
                 placeholder="e.g. sm_bza or controller_scr"
-                className="w-full glass-input rounded-xl pl-11 pr-3 py-2.5 text-sm text-white font-mono outline-none"
-                style={{ paddingLeft: '2.75rem' }}
+                className="w-full glass-input rounded-xl pl-11 pr-4 py-3 text-sm text-white font-mono outline-none"
               />
             </div>
           </div>
 
           {activeAccount && (
             <div className="space-y-1.5">
-              <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-[0.14em]">Division / Zone</label>
-              <div className="relative glass-subtle rounded-xl pl-11 pr-3 py-2.5 text-sm text-slate-300 flex items-center overflow-hidden" style={{ paddingLeft: '2.75rem' }}>
-                <Train className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                <span className="relative flex items-center gap-2 truncate">
+              <label className="block text-[11px] font-semibold text-slate-400 uppercase tracking-[0.12em]">Division / Zone</label>
+              <div className="relative glass-subtle rounded-xl pl-11 pr-4 py-3 text-sm text-slate-300 flex items-center overflow-hidden">
+                <Train className="w-4 h-4 text-slate-500 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <span className="flex items-center gap-2 truncate">
                   {activeAccount.division}
-                  <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded bg-slate-800 text-cyan-300 border border-slate-700 shrink-0">{activeAccount.station}</span>
+                  <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-slate-800 text-cyan-300 border border-slate-700 shrink-0">{activeAccount.station}</span>
                 </span>
               </div>
             </div>
           )}
 
           <div className="space-y-1.5">
-            <label htmlFor="operator-password" className="text-[10px] font-semibold text-slate-400 uppercase tracking-[0.14em]">Password</label>
-            <div className="relative flex items-center">
-              <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
+            <label htmlFor="operator-password" className="block text-[11px] font-semibold text-slate-400 uppercase tracking-[0.12em]">Password</label>
+            <div className="relative">
+              <Lock className="w-4 h-4 text-slate-500 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
               <input
                 id="operator-password"
                 type={showPassword ? 'text' : 'password'}
@@ -248,14 +214,13 @@ export default function StaffLogin({ onLoginSuccess, onCancel }) {
                 required
                 autoComplete="current-password"
                 placeholder="Enter operator password"
-                className="w-full glass-input rounded-xl pl-11 pr-11 py-2.5 text-sm text-white font-mono outline-none"
-                style={{ paddingLeft: '2.75rem' }}
+                className="w-full glass-input rounded-xl pl-11 pr-11 py-3 text-sm text-white font-mono outline-none"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(v => !v)}
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
-                className="absolute right-3 text-slate-500 hover:text-slate-300 transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -266,7 +231,7 @@ export default function StaffLogin({ onLoginSuccess, onCancel }) {
             {isLoading ? 'Authenticating with Backend...' : <><span>Authenticate &amp; Enter Portal</span><ArrowRight className="w-4 h-4" /></>}
           </Button>
 
-          <div className="pt-1 pb-2 flex items-center justify-between text-[10px] text-slate-500 border-t border-slate-800/80">
+          <div className="py-1 flex items-center justify-between gap-2 text-[11px] text-slate-500 border-t border-slate-800/80">
             <span className="flex items-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
               SHA-256 salted hash · JWT 8h session
@@ -284,7 +249,7 @@ export default function StaffLogin({ onLoginSuccess, onCancel }) {
         </form>
       </Card>
 
-      <p className="text-center text-[10px] text-slate-600 mt-4">Authorised staff only · Session expires automatically after 8 hours</p>
+      <p className="text-center text-[11px] text-slate-600 mt-4">Authorised staff only · Session expires automatically after 8 hours</p>
     </div>
   );
 }

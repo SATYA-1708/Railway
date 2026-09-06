@@ -74,13 +74,40 @@ export default function Navbar({
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-[#dce5f0] shadow-[0_1px_0_rgba(24,46,82,0.04)]">
       {/* Government top band */}
-      <div className="gov-band px-4 sm:px-6 lg:px-8 py-1.5">
-        <div className="relative gov-band-tricolor">
+      <div className="gov-band px-3 sm:px-6 py-1.5 overflow-hidden flex items-center gap-3">
+        <div className="relative gov-band-tricolor shrink-0">
           <span></span><span></span><span></span>
         </div>
-        <span className="text-[11px] font-medium text-[#51678a] tracking-wide">
-          RailFlow Portal — Smart India Hackathon 2026 · Problem Statement 26028
-        </span>
+        
+        {/* Continuous Smooth Scrolling Marquee */}
+        <div className="gov-marquee-container flex-1">
+          <div className="gov-marquee-content text-[11px] font-medium text-[#51678a] tracking-wide items-center gap-8">
+            <span className="inline-flex items-center gap-2">
+              <span className="font-bold text-[#14253d]">RailFlow AI Portal</span>
+              <span>—</span>
+              <span className="font-semibold text-[#1b56a0]">Smart India Hackathon 2026</span>
+              <span>·</span>
+              <strong className="text-[#0d7a56]">Problem Statement 26028:</strong>
+              <span>Dynamic Forecast of Expected Time of Arrival (ETA) for Coaching Trains</span>
+              <span className="text-[#93a6bf]">|</span>
+              <span>Ministry of Railways, Government of India 🇮🇳</span>
+              <span className="text-[#93a6bf]">|</span>
+              <span className="text-emerald-700 font-bold">● Live NTES & EPIS Satellite Telemetry Engine Active</span>
+            </span>
+
+            <span className="inline-flex items-center gap-2">
+              <span className="font-bold text-[#14253d]">RailFlow AI Portal</span>
+              <span>—</span>
+              <span className="font-semibold text-[#1b56a0]">Smart India Hackathon 2026</span>
+              <span>·</span>
+              <strong className="text-[#0d7a56]">Problem Statement 26028:</strong>
+              <span>Dynamic Forecast of Expected Time of Arrival (ETA) for Coaching Trains</span>
+              <span className="text-[#93a6bf]">|</span>
+              <span>Ministry of Railways, Government of India 🇮🇳</span>
+              <span className="text-emerald-700 font-bold">● Live NTES & EPIS Satellite Telemetry Engine Active</span>
+            </span>
+          </div>
+        </div>
       </div>
 
       {/* Main bar */}

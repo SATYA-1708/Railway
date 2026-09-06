@@ -693,6 +693,37 @@
   pointer-events: none;
 }
 
+/* Top Marquee Scrolling Ticker */
+.gov-marquee-container {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  mask-image: linear-gradient(to right, transparent 0%, black 15px, black calc(100% - 15px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15px, black calc(100% - 15px), transparent 100%);
+}
+
+.gov-marquee-content {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: gov-marquee-scroll 35s linear infinite;
+  will-change: transform;
+}
+
+.gov-marquee-content:hover {
+  animation-play-state: paused;
+}
+
+@keyframes gov-marquee-scroll {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
 /* Fade-in for portal content */
 .portal-fade { animation: fade-up 0.4s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
