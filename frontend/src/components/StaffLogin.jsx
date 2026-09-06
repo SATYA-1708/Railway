@@ -147,42 +147,45 @@ export default function StaffLogin({ onLoginSuccess, onCancel }) {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
             <label className="text-[11px] font-semibold text-slate-400 uppercase tracking-[0.12em]">Operator Username</label>
-            <div className="relative">
-              <User className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
+            <div className="relative flex items-center">
+              <User className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
               <input
                 value={operatorId}
                 onChange={(e) => setOperatorId(e.target.value)}
                 required
                 placeholder="e.g. sm_bza or controller_scr"
-                className="w-full glass-input rounded-xl pl-9 pr-3 py-2.5 text-sm text-white font-mono outline-none"
+                className="w-full glass-input rounded-xl pl-11 pr-3 py-2.5 text-sm text-white font-mono outline-none"
+                style={{ paddingLeft: '2.75rem' }}
               />
             </div>
           </div>
 
           <div className="space-y-1.5">
             <label className="text-[11px] font-semibold text-slate-400 uppercase tracking-[0.12em]">Division / Zone</label>
-            <div className="relative">
-              <Train className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
+            <div className="relative flex items-center">
+              <Train className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
               <input
                 value={division}
                 onChange={(e) => setDivision(e.target.value)}
                 required
-                className="w-full glass-input rounded-xl pl-9 pr-3 py-2.5 text-sm text-white outline-none"
+                className="w-full glass-input rounded-xl pl-11 pr-3 py-2.5 text-sm text-white outline-none"
+                style={{ paddingLeft: '2.75rem' }}
               />
             </div>
           </div>
 
           <div className="space-y-1.5">
             <label className="text-[11px] font-semibold text-slate-400 uppercase tracking-[0.12em]">Password</label>
-            <div className="relative">
-              <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
+            <div className="relative flex items-center">
+              <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 placeholder="Enter operator password"
-                className="w-full glass-input rounded-xl pl-9 pr-3 py-2.5 text-sm text-white outline-none"
+                className="w-full glass-input rounded-xl pl-11 pr-3 py-2.5 text-sm text-white outline-none"
+                style={{ paddingLeft: '2.75rem' }}
               />
             </div>
           </div>

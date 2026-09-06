@@ -264,13 +264,14 @@ export default function LandingPage({ onCheckTrain, onStaffLogin: _onStaffLogin,
                     light
                     className="flex-1"
                   />
-                  <div className="relative sm:w-44 shrink-0">
-                    <Calendar className="w-4 h-4 text-[#6b7f99] absolute left-3.5 top-3.5 pointer-events-none" />
+                  <div className="relative sm:w-44 shrink-0 flex items-center">
+                    <Calendar className="w-4 h-4 text-[#6b7f99] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
                     <input
                       type="date"
                       value={homeDate}
                       onChange={(e) => setHomeDate(e.target.value)}
-                      className="portal-input pl-10"
+                      className="portal-input pl-11"
+                      style={{ paddingLeft: '2.75rem' }}
                     />
                   </div>
                   <button type="submit" disabled={isSearching} className="portal-btn portal-btn-primary shrink-0 h-[42px]">

@@ -423,6 +423,9 @@
   outline: none;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
+.portal-input.pl-8, .portal-input.pl-9, .portal-input.pl-10, .portal-input.pl-11, .portal-input.pl-12, .portal-input-icon {
+  padding-left: 2.75rem !important;
+}
 .portal-input:focus {
   border-color: #2f6db3;
   box-shadow: 0 0 0 3px rgba(47, 109, 179, 0.16);

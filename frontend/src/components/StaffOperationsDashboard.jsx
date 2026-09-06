@@ -497,14 +497,15 @@ export default function StaffOperationsDashboard({
             </div>
 
             {/* Search */}
-            <div className="relative w-full md:w-56">
-              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
+            <div className="relative w-full md:w-56 flex items-center">
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
               <input
                 type="text"
                 value={quick}
                 onChange={e => setQuick(e.target.value)}
                 placeholder="Search train / station..."
-                className="w-full bg-black/40 border border-white/15 rounded-lg pl-8 pr-2 py-1 text-xs text-white outline-none focus:border-cyan-400"
+                className="w-full bg-black/40 border border-white/15 rounded-lg pl-9 pr-2 py-1.5 text-xs text-white outline-none focus:border-cyan-400"
+                style={{ paddingLeft: '2.25rem' }}
               />
             </div>
           </div>

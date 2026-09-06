@@ -122,14 +122,15 @@ export default function StaffLiveMonitoring({ trains = [], onSelectTrainForDetai
         </div>
 
         {/* Search Input */}
-        <div className="relative w-full md:w-64">
-          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+        <div className="relative w-full md:w-64 flex items-center">
+          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search train / station on map..."
-            className="w-full bg-black/40 border border-white/15 focus:border-cyan-400 rounded-xl pl-9 pr-3 py-1.5 text-xs text-white outline-none"
+            className="w-full bg-black/40 border border-white/15 focus:border-cyan-400 rounded-xl pl-10 pr-3 py-2 text-xs text-white outline-none"
+            style={{ paddingLeft: '2.4rem' }}
           />
         </div>
       </div>

@@ -171,8 +171,8 @@ export default function AutocompleteInput({
 
   return (
     <div ref={wrapperRef} className={`relative ${className}`}>
-      <div className="relative">
-        {Icon && <Icon className={`w-4 h-4 ${iconColor} absolute left-3.5 top-3 pointer-events-none`} />}
+      <div className="relative flex items-center">
+        {Icon && <Icon className={`w-4 h-4 ${iconColor} absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10`} />}
         {light ? (
           <input
             type="text"
@@ -183,7 +183,8 @@ export default function AutocompleteInput({
             placeholder={placeholder}
             autoFocus={autoFocus}
             required={required}
-            className={`portal-input pl-10 ${inputClassName}`}
+            className={`portal-input pl-11 ${inputClassName}`}
+            style={{ paddingLeft: '2.75rem' }}
           />
         ) : (
           <input
@@ -195,7 +196,8 @@ export default function AutocompleteInput({
             placeholder={placeholder}
             autoFocus={autoFocus}
             required={required}
-            className={`w-full glass-input rounded-xl pl-10 pr-3 py-2.5 text-sm text-white placeholder-slate-500 outline-none ${inputClassName}`}
+            className={`w-full glass-input rounded-xl pl-11 pr-3 py-2.5 text-sm text-white placeholder-slate-500 outline-none ${inputClassName}`}
+            style={{ paddingLeft: '2.75rem' }}
           />
         )}
       </div>

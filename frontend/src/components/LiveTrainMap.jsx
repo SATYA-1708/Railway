@@ -387,14 +387,15 @@ export default function LiveTrainMap({ trains = [], selectedTrainNumber = null, 
       {/* Floating Search & Filters Control Bar */}
       <div className="absolute top-4 right-4 z-[1000] flex flex-col sm:flex-row items-end sm:items-center gap-2 max-w-[calc(100%-2rem)]">
         {/* Search Input */}
-        <div className="relative w-48 sm:w-56 bg-slate-900/90 backdrop-blur-md rounded-xl border border-slate-700/80 shadow-lg">
-          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-3 pointer-events-none" />
+        <div className="relative w-48 sm:w-56 bg-slate-900/90 backdrop-blur-md rounded-xl border border-slate-700/80 shadow-lg flex items-center">
+          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search train no. or name..."
-            className="w-full bg-transparent text-xs text-white placeholder-slate-400 pl-8 pr-7 py-2 rounded-xl focus:outline-none focus:ring-1 focus:ring-cyan-400"
+            className="w-full bg-transparent text-xs text-white placeholder-slate-400 pl-9 pr-7 py-2 rounded-xl focus:outline-none focus:ring-1 focus:ring-cyan-400"
+            style={{ paddingLeft: '2.25rem' }}
           />
           {searchQuery && (
             <button

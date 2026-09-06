@@ -332,14 +332,15 @@ export default function StaffTrains({ onSelectTrainForEta, onSelectTrainForLive,
       </div>
 
       {/* Search */}
-      <div className="relative max-w-xl">
-        <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+      <div className="relative max-w-xl flex items-center">
+        <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search train number, name, or station..."
-          className="w-full bg-slate-900 border border-slate-700 focus:border-cyan-500 rounded-xl pl-9 pr-3 py-2.5 text-sm text-white placeholder-slate-500 outline-none"
+          className="w-full bg-slate-900 border border-slate-700 focus:border-cyan-500 rounded-xl pl-11 pr-3 py-2.5 text-sm text-white placeholder-slate-500 outline-none"
+          style={{ paddingLeft: '2.75rem' }}
         />
       </div>
 

@@ -84,15 +84,16 @@ export default function PnrTracker({ onTrackTrain = () => {}, onSaveJourney = ()
 
         {/* Search input form */}
         <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-2.5">
-          <div className="relative flex-1">
-            <Ticket className="w-4 h-4 text-[#6b7f99] absolute left-3.5 top-3.5" />
+          <div className="relative flex-1 flex items-center">
+            <Ticket className="w-4 h-4 text-[#6b7f99] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
             <input
               type="text"
               value={pnrInput}
               onChange={(e) => setPnrInput(e.target.value)}
               placeholder="Enter 10-digit PNR Number (e.g. 4523918472)"
               maxLength={10}
-              className="portal-input pl-10 font-mono"
+              className="portal-input pl-11 font-mono"
+              style={{ paddingLeft: '2.75rem' }}
             />
           </div>
           <button

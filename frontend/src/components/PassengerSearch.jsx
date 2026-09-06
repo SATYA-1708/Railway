@@ -164,13 +164,14 @@ export default function PassengerSearch({ trains = [], onSelectTrain = () => {},
               </div>
               <div>
                 <label className="portal-label">Date</label>
-                <div className="relative">
-                  <Calendar className="w-4 h-4 text-[#6b7f99] absolute left-3.5 top-3 pointer-events-none" />
+                <div className="relative flex items-center">
+                  <Calendar className="w-4 h-4 text-[#6b7f99] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
                   <input
                     type="date"
                     value={travelDate}
                     onChange={e => setTravelDate(e.target.value)}
-                    className="portal-input pl-10"
+                    className="portal-input pl-11"
+                    style={{ paddingLeft: '2.75rem' }}
                   />
                 </div>
               </div>
@@ -218,13 +219,14 @@ export default function PassengerSearch({ trains = [], onSelectTrain = () => {},
               </div>
               <div>
                 <label className="portal-label">Date</label>
-                <div className="relative">
-                  <Calendar className="w-4 h-4 text-[#6b7f99] absolute left-3.5 top-3 pointer-events-none" />
+                <div className="relative flex items-center">
+                  <Calendar className="w-4 h-4 text-[#6b7f99] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
                   <input
                     type="date"
                     value={trainDate}
                     onChange={e => setTrainDate(e.target.value)}
-                    className="portal-input pl-10"
+                    className="portal-input pl-11"
+                    style={{ paddingLeft: '2.75rem' }}
                   />
                 </div>
               </div>

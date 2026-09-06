@@ -426,7 +426,7 @@ export default function StationDisplayBoard() {
             {/* Search Box with Popover Suggestions */}
             <div ref={searchBoxRef} className="relative w-full sm:w-64">
               <div className="relative flex items-center">
-                <Search className="w-4 h-4 text-slate-500 absolute left-3 pointer-events-none" />
+                <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
                 <input
                   type="text"
                   value={searchQuery}
@@ -434,7 +434,8 @@ export default function StationDisplayBoard() {
                   onFocus={() => { if (suggestions.length > 0) setIsSuggestOpen(true); }}
                   onKeyDown={handleKeyDown}
                   placeholder="Change station (e.g. NDLS)..."
-                  className="w-full bg-black/50 border border-white/15 focus:border-cyan-400 text-white placeholder-slate-500 pl-9 pr-8 py-2 rounded-xl text-xs sm:text-sm font-semibold tracking-wide uppercase focus:outline-none focus:ring-1 focus:ring-cyan-400/40 transition-all"
+                  className="w-full bg-black/50 border border-white/15 focus:border-cyan-400 text-white placeholder-slate-500 pl-10 pr-8 py-2 rounded-xl text-xs sm:text-sm font-semibold tracking-wide uppercase focus:outline-none focus:ring-1 focus:ring-cyan-400/40 transition-all"
+                  style={{ paddingLeft: '2.5rem' }}
                 />
                 {searchQuery && (
                   <button
