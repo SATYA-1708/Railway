@@ -47,42 +47,7 @@ export default function LandingPage({ onCheckTrain, onStaffLogin: _onStaffLogin,
   const [isSearching, setIsSearching] = useState(false);
   const [betweenResults, setBetweenResults] = useState(null);
 
-  // Derive active journey from saved journeys if available
-  const rawActive = savedJourneys && savedJourneys.length > 0 ? savedJourneys[0] : null;
-  const activeLiveJourney = useMemo(() => {
-    if (!rawActive) return null;
-    const num = String(rawActive.number || '').replace('#', '').trim();
-    const master = REAL_TRAINS_DATABASE.find(t => String(t.number) === num) || {};
-    const live = Array.isArray(trains) ? trains.find(t => String(t.number) === num) : null;
-    const merged = { ...master, ...rawActive, ...(live || {}) };
-    
-    const schedArr = merged.scheduledArrival || master.scheduledArrival || '05:40';
-    const delay = typeof merged.delayMin === 'number' ? merged.delayMin : (typeof merged.baseDelayMin === 'number' ? merged.baseDelayMin : (master.baseDelayMin || 4));
-    
-    let dynEta = merged.dynamicEta;
-    if (!dynEta || dynEta === '--:--') {
-      if (schedArr && schedArr !== '--:--') {
-        const parts = schedArr.split(':').map(Number);
-        if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
-          const totalM = (parts[0] * 60 + parts[1] + delay + 1440) % 1440;
-          dynEta = `${String(Math.floor(totalM / 60)).padStart(2, '0')}:${String(totalM % 60).padStart(2, '0')}`;
-        }
-      }
-    }
-    
-    return {
-      ...merged,
-      name: merged.name || master.name || 'Andhra Pradesh Express',
-      from: merged.from || 'Visakhapatnam (VSKP)',
-      to: merged.to || 'New Delhi (NDLS)',
-      scheduledArrival: schedArr,
-      dynamicEta: dynEta || schedArr,
-      delayMin: delay,
-      baseDelayMin: delay,
-      lastStation: merged.lastStation || master.lastStation || 'Duvvada (DVD)',
-      nextStation: merged.nextStation || master.nextStation || 'Anakapalle (AKP)'
-    };
-  }, [rawActive, trains]);
+
 
   const handleHomeSearch = async (e) => {
     if (e) e.preventDefault();

@@ -40,21 +40,36 @@ export default function App() {
   const [savedJourneys, setSavedJourneys] = useState(() => {
     try {
       const saved = localStorage.getItem('railflow_saved_journeys');
-      if (saved) {
+      if (saved !== null) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed)) return parsed;
       }
     } catch {}
     const defaultTrain = REAL_TRAINS_DATABASE.find(t => t.number === '20805');
     return defaultTrain ? [{ ...defaultTrain, savedAt: new Date().toISOString(), notificationsEnabled: true }] : [];
   });
-  const [alertSubscriptions, setAlertSubscriptions] = useState(['20805']);
+  const [alertSubscriptions, setAlertSubscriptions] = useState(() => {
+    try {
+      const saved = localStorage.getItem('railflow_alert_subs');
+      if (saved !== null) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch {}
+    return [];
+  });
 
   useEffect(() => {
     try {
       localStorage.setItem('railflow_saved_journeys', JSON.stringify(savedJourneys));
     } catch {}
   }, [savedJourneys]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('railflow_alert_subs', JSON.stringify(alertSubscriptions));
+    } catch {}
+  }, [alertSubscriptions]);
 
   // Tracked trains: journeys + alert subscriptions + recent searches + selected train
   const trackedTrainNumbers = useMemo(() => {
@@ -271,6 +286,7 @@ export default function App() {
   const handleRemoveJourney = (trainNumber) => {
     const cleanNum = String(trainNumber || '').replace('#', '').trim();
     setSavedJourneys(prev => prev.filter(j => String(j.number || '').replace('#', '').trim() !== cleanNum));
+    setAlertSubscriptions(prev => prev.filter(n => String(n).replace('#', '').trim() !== cleanNum));
   };
 
   const handleToggleNotification = (trainNumber) => {

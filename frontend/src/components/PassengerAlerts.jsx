@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Bell, AlertTriangle, Clock, MapPin, ArrowRight, CheckCircle2, ShieldAlert, Sparkles, Trash2 } from 'lucide-react';
 import Card from './ui/Card';
 import Badge from './ui/Badge';
@@ -26,7 +26,22 @@ export default function PassengerAlerts({
   loading = false,
 }) {
   const [activeFilter, setActiveFilter] = useState('all');
-  const [deletedAlertIds, setDeletedAlertIds] = useState([]);
+  const [deletedAlertIds, setDeletedAlertIds] = useState(() => {
+    try {
+      const saved = localStorage.getItem('railflow_deleted_alerts');
+      if (saved !== null) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch {}
+    return [];
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('railflow_deleted_alerts', JSON.stringify(deletedAlertIds));
+    } catch {}
+  }, [deletedAlertIds]);
 
   // Use train alerts if provided, otherwise use the passed alerts (from saved journeys)
   const trainAlerts = train?.alerts?.map((a, idx) => ({
