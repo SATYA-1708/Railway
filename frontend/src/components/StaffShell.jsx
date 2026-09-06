@@ -138,17 +138,19 @@ export default function StaffShell({
             })}
           </nav>
 
-          {/* Top Controls: Station, Passenger View, Refresh, Logout */}
+          {/* Top Controls: Station, Refresh, Logout */}
           <div className="flex items-center gap-2 shrink-0 ml-2">
-            {/* Passenger View Portal Switcher */}
-            <button
-              type="button"
-              onClick={onSwitchToPassenger}
-              className="hidden sm:flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-white/[0.06] hover:bg-white/10 border border-white/15 text-[11px] font-bold text-slate-300 hover:text-white transition-all"
-              title="Switch to Passenger Portal"
-            >
-              Passenger View <ArrowUpRight className="w-3 h-3 text-cyan-300" />
-            </button>
+            {/* Passenger View Portal Switcher (Hidden for Section Controller) */}
+            {userRole !== 'section_controller' && (
+              <button
+                type="button"
+                onClick={onSwitchToPassenger}
+                className="hidden sm:flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-white/[0.06] hover:bg-white/10 border border-white/15 text-[11px] font-bold text-slate-300 hover:text-white transition-all"
+                title="Switch to Passenger Portal"
+              >
+                Passenger View <ArrowUpRight className="w-3 h-3 text-cyan-300" />
+              </button>
+            )}
 
             {/* Station Selector */}
             <select
