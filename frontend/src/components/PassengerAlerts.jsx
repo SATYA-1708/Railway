@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bell, AlertTriangle, Clock, MapPin, ArrowRight, CheckCircle2, ShieldAlert, Sparkles } from 'lucide-react';
+import { Bell, AlertTriangle, Clock, MapPin, ArrowRight, CheckCircle2, ShieldAlert, Sparkles, Trash2 } from 'lucide-react';
 import Card from './ui/Card';
 import Badge from './ui/Badge';
 import SectionHeader from './ui/SectionHeader';
@@ -26,6 +26,7 @@ export default function PassengerAlerts({
   loading = false,
 }) {
   const [activeFilter, setActiveFilter] = useState('all');
+  const [deletedAlertIds, setDeletedAlertIds] = useState([]);
 
   // Use train alerts if provided, otherwise use the passed alerts (from saved journeys)
   const trainAlerts = train?.alerts?.map((a, idx) => ({
@@ -42,8 +43,17 @@ export default function PassengerAlerts({
     time: a.time || 'Live Update',
   })) || [];
 
-  const alerts = standalone ? (propAlerts || []) : trainAlerts;
+  const rawAlerts = standalone ? (propAlerts || []) : trainAlerts;
+  const alerts = rawAlerts.filter(a => !deletedAlertIds.includes(a.id));
   const filteredAlerts = activeFilter === 'all' ? alerts : alerts.filter(a => a.type === activeFilter);
+
+  const handleDeleteAlert = (alertId) => {
+    setDeletedAlertIds(prev => [...prev, alertId]);
+  };
+
+  const handleClearAll = () => {
+    setDeletedAlertIds(rawAlerts.map(a => a.id));
+  };
 
   const getAlertBadge = (type, severity) => {
     switch (type) {
@@ -102,10 +112,19 @@ export default function PassengerAlerts({
             </p>
           </div>
           {alerts.length > 0 && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <span className="text-xs font-semibold text-[#6b7f99]">
                 {alerts.length} Total Alerts • {alerts.filter(a => !readAlertIds.includes(a.id)).length} Unread
               </span>
+              <button
+                type="button"
+                onClick={handleClearAll}
+                className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-rose-700 hover:text-rose-900 bg-rose-50 hover:bg-rose-100 rounded-md border border-rose-200 transition-colors cursor-pointer"
+                title="Clear all alerts"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Clear All</span>
+              </button>
             </div>
           )}
         </div>
@@ -118,7 +137,22 @@ export default function PassengerAlerts({
           iconColor="text-[#0d7a56]"
           title={`Alerts for #${train?.number || 'Train'}`}
           description="Live delay, platform berthing & ETA adjustments"
-          badge={<span className="portal-chip">{filteredAlerts.length} Updates</span>}
+          badge={
+            <div className="flex items-center gap-2">
+              <span className="portal-chip">{filteredAlerts.length} Updates</span>
+              {alerts.length > 0 && (
+                <button
+                  type="button"
+                  onClick={handleClearAll}
+                  className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-semibold text-rose-700 hover:text-rose-900 bg-rose-50 hover:bg-rose-100 rounded-md border border-rose-200 transition-colors cursor-pointer"
+                  title="Clear all alerts"
+                >
+                  <Trash2 className="w-3 h-3" />
+                  <span>Clear</span>
+                </button>
+              )}
+            </div>
+          }
         />
       )}
 
@@ -227,6 +261,17 @@ export default function PassengerAlerts({
                         </span>
                       )}
                       {getAlertBadge(alert.type, alert.severity)}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteAlert(alert.id);
+                        }}
+                        className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors cursor-pointer ml-1"
+                        title="Delete alert"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
                     </div>
 
                     <span className="text-[11px] font-medium text-slate-400">
@@ -241,7 +286,7 @@ export default function PassengerAlerts({
                           e.stopPropagation();
                           onSelectTrain(alert.trainObj);
                         }}
-                        className="mt-1 px-2.5 py-1 rounded-md bg-[#1b56a0] hover:bg-[#154684] text-white text-xs font-bold transition-colors flex items-center gap-1 shadow-xs"
+                        className="mt-1 px-2.5 py-1 rounded-md bg-[#1b56a0] hover:bg-[#154684] text-white text-xs font-bold transition-colors flex items-center gap-1 shadow-xs cursor-pointer"
                       >
                         <span>Track Train</span>
                         <ArrowRight className="w-3 h-3" />

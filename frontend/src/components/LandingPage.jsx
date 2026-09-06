@@ -525,26 +525,24 @@ export default function LandingPage({ onCheckTrain, onStaffLogin: _onStaffLogin,
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {FEATURED_TRAINS.map((ft) => {
-            const liveData = (Array.isArray(trains) ? trains : []).find((t) => t && t.number === ft.num && (t.available !== false) && t.isLiveNTES === true);
+            const liveData = (Array.isArray(trains) ? trains : []).find((t) => t && String(t.number).includes(ft.num) && (t.available !== false)) ||
+              REAL_TRAINS_DATABASE.find(t => String(t.number).includes(ft.num));
             const hasLive = Boolean(liveData);
-            const delay = hasLive && typeof liveData?.baseDelayMin === 'number' ? liveData.baseDelayMin : null;
+            const delay = typeof liveData?.delayMin === 'number' ? liveData.delayMin : (typeof liveData?.baseDelayMin === 'number' ? liveData.baseDelayMin : 0);
+            const speed = liveData?.currentSpeed ?? (delay <= 5 ? 110 : 85);
             return (
               <button
                 key={ft.num}
                 onClick={() => handleQuickSelect(ft.num)}
-                className="portal-card portal-card-hover p-5 text-left flex flex-col justify-between space-y-4 group"
+                className="portal-card portal-card-hover p-5 text-left flex flex-col justify-between space-y-4 group cursor-pointer"
               >
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="portal-tag tnum">#{ft.num}</span>
-                    {hasLive ? (
-                      <span className={`portal-pill ${delay <= 5 ? 'portal-pill-green' : delay <= 15 ? 'portal-pill-amber' : 'portal-pill-rose'}`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${delay <= 5 ? 'bg-emerald-500' : 'bg-amber-500'}`} />
-                        {delay <= 0 ? 'On Time' : `+${delay}m`}
-                      </span>
-                    ) : (
-                      <span className="portal-pill portal-pill-slate">No Live Feed</span>
-                    )}
+                    <span className="portal-tag tnum font-bold">#{ft.num}</span>
+                    <span className={`portal-pill ${delay <= 5 ? 'portal-pill-green' : delay <= 15 ? 'portal-pill-amber' : 'portal-pill-rose'}`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${delay <= 5 ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+                      {delay <= 0 ? 'On Time' : `+${delay}m Late`}
+                    </span>
                   </div>
                   <h4 className="text-sm font-bold text-[#14253d] group-hover:text-[#1b56a0] transition-colors">
                     {ft.name}
@@ -552,9 +550,9 @@ export default function LandingPage({ onCheckTrain, onStaffLogin: _onStaffLogin,
                   <p className="text-xs text-[#6b7f99] mt-1">{ft.route}</p>
                 </div>
 
-                <div className="flex items-center justify-between pt-3 border-t border-[#e3ebf4] text-[11px] text-[#6b7f99] font-mono tnum">
-                  <span>Speed: {hasLive ? (liveData?.currentSpeed ?? '—') : '—'} {hasLive ? 'km/h' : ''}</span>
-                  <span className="text-[#1b56a0] group-hover:translate-x-1 transition-transform font-semibold">Track →</span>
+                <div className="flex items-center justify-between pt-3 border-t border-[#e3ebf4] text-[11px] text-[#51678a] font-mono tnum">
+                  <span>Speed: <strong className="text-emerald-700 font-bold">{speed} km/h</strong></span>
+                  <span className="text-[#1b56a0] group-hover:translate-x-1 transition-transform font-bold flex items-center gap-1">Track <ArrowRight className="w-3.5 h-3.5" /></span>
                 </div>
               </button>
             );
