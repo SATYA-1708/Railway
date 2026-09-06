@@ -34,9 +34,9 @@ const ALL_NAV_ITEMS = [
 ];
 
 const ROLE_TAB_KEYS = {
-  station_master: ['dashboard', 'live-map', 'trains', 'platforms', 'eta', 'what-if', 'profile'],
-  section_controller: ['dashboard', 'live-map', 'trains', 'what-if', 'tsr', 'eta', 'analytics', 'profile'],
-  divisional_hq: ['dashboard', 'live-map', 'trains', 'tsr', 'eta', 'analytics', 'profile'],
+  station_master: ['dashboard', 'live-map', 'trains', 'platforms', 'signals', 'eta', 'what-if', 'profile'],
+  section_controller: ['dashboard', 'live-map', 'trains', 'signals', 'what-if', 'tsr', 'platforms', 'eta', 'analytics', 'profile'],
+  divisional_hq: ['dashboard', 'live-map', 'trains', 'signals', 'tsr', 'platforms', 'eta', 'analytics', 'profile'],
 };
 
 const ROLE_LABELS = {
