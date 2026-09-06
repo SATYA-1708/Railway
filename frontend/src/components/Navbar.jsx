@@ -226,16 +226,11 @@ export default function Navbar({
 
             {/* Typography */}
             <div className="flex flex-col justify-center">
-              <div className="flex items-center gap-1.5 leading-none">
-                <span className="font-display font-black text-[22px] tracking-tight text-[#0a192f] group-hover:text-[#1b56a0] transition-colors">
-                  RAIL<span className="text-[#1b56a0]">FLOW</span>
-                </span>
-                <span className="px-1.5 py-0.5 text-[9px] font-black tracking-wider bg-gradient-to-r from-[#1b56a0] to-[#0284c7] text-white rounded font-mono shadow-xs uppercase">
-                  AI
-                </span>
-              </div>
-              <p className="text-[10px] font-bold text-[#576f8f] tracking-[0.08em] uppercase mt-1 leading-none font-sans">
-                National Express ETA Engine
+              <span className="font-display font-black text-[22px] tracking-tight text-[#0a192f] group-hover:text-[#1b56a0] transition-colors leading-none">
+                Rail<span className="text-[#1b56a0]">Flow</span>
+              </span>
+              <p className="text-[10px] font-semibold text-[#576f8f] tracking-[0.05em] mt-1 leading-none font-sans">
+                Dynamic Train ETA Portal
               </p>
             </div>
           </button>
