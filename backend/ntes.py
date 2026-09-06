@@ -54,6 +54,14 @@ if os.path.exists(SCHEDULES_FILE):
     except Exception as e:
         logger.warning(f"Failed to load train_schedules.json: {e}")
 
+# In-memory fast station index for O(1) station-level lookups
+STATION_STOPS_INDEX: Dict[str, List[Any]] = {}
+for _t_num, _stops in TRAIN_SCHEDULES_DATA.items():
+    for _s in _stops:
+        _c = _s.get("StationCode")
+        if _c:
+            STATION_STOPS_INDEX.setdefault(str(_c).upper(), []).append((_t_num, _s))
+
 
 def _parse_mins(t_str: str, default: int = 0) -> int:
     """Convert HH:MM to minutes from midnight."""

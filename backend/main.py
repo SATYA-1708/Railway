@@ -1020,24 +1020,27 @@ def get_station_live_status_api(station_code: str):
     seen_trains = set()
 
     try:
-        from ntes import TRAIN_SCHEDULES_DATA, TRAINS_DIRECTORY
+        from ntes import TRAIN_SCHEDULES_DATA, TRAINS_DIRECTORY, STATION_STOPS_INDEX
     except ImportError:
         try:
-            from backend.ntes import TRAIN_SCHEDULES_DATA, TRAINS_DIRECTORY
+            from backend.ntes import TRAIN_SCHEDULES_DATA, TRAINS_DIRECTORY, STATION_STOPS_INDEX
         except ImportError:
             TRAIN_SCHEDULES_DATA = {}
             TRAINS_DIRECTORY = {}
+            STATION_STOPS_INDEX = {}
 
     valid_codes = {"KRHR", "KARR"} if code in ("KRHR", "KARR") else ({"CSMT", "CSTM"} if code in ("CSMT", "CSTM") else {code})
 
-    for t_num, stops in TRAIN_SCHEDULES_DATA.items():
+    matched_stops = []
+    for vc in valid_codes:
+        matched_stops.extend(STATION_STOPS_INDEX.get(vc.upper(), []))
+
+    for t_num, s in matched_stops:
         if t_num in seen_trains:
             continue
-        for s in stops:
-            if s.get("StationCode") in valid_codes:
-                sta = str(s.get("STA") or "--").strip()
-                std = str(s.get("STD") or "--").strip()
-                t_meta = TRAINS_DIRECTORY.get(t_num, {})
+        sta = str(s.get("STA") or "--").strip()
+        std = str(s.get("STD") or "--").strip()
+        t_meta = TRAINS_DIRECTORY.get(t_num, {})
                 
                 time_str = None
                 if std and std not in ("--", "None"):

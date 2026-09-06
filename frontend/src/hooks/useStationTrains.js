@@ -5,16 +5,19 @@ const CACHE_TTL_MS = 30000;
 
 const isLive = (t) => t && (t.available !== false) && (t.isLiveNTES === true || t.dataSource === 'SIMULATED' || !!t.predictionSource || (t.number && t.name));
 
+const STATION_DATA_CACHE = new Map();
+
 export function useStationTrains(stationCode = 'BZA', pollIntervalMs = 30000) {
-  const [trains, setTrains] = useState([]);
-  const [throughTrains, setThroughTrains] = useState([]);
-  const [movementConflicts, setMovementConflicts] = useState([]);
-  const [platforms, setPlatforms] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const cached = STATION_DATA_CACHE.get(stationCode);
+
+  const [trains, setTrains] = useState(() => cached?.trains || []);
+  const [throughTrains, setThroughTrains] = useState(() => cached?.throughTrains || []);
+  const [movementConflicts, setMovementConflicts] = useState(() => cached?.movementConflicts || []);
+  const [platforms, setPlatforms] = useState(() => cached?.platforms || []);
+  const [loading, setLoading] = useState(() => !cached);
   const [error, setError] = useState(null);
   const [isFallback, setIsFallback] = useState(false);
-  const [lastUpdated, setLastUpdated] = useState(null);
-  const cacheRef = useRef({});
+  const [lastUpdated, setLastUpdated] = useState(() => cached?.lastUpdated || null);
 
   const fetchStationTrains = useCallback(async (isManualRefresh = false) => {
     if (!stationCode) {
@@ -23,7 +26,9 @@ export function useStationTrains(stationCode = 'BZA', pollIntervalMs = 30000) {
       return;
     }
 
-    setLoading(true);
+    if (!STATION_DATA_CACHE.has(stationCode) || isManualRefresh) {
+      setLoading(true);
+    }
 
     try {
       const url = `${API_BASE_URL}/api/station-live/${encodeURIComponent(stationCode)}`;
@@ -32,22 +37,28 @@ export function useStationTrains(stationCode = 'BZA', pollIntervalMs = 30000) {
       const data = await resp.json();
 
       const stationTrains = (data.liveTrains || []).filter(isLive);
-      setPlatforms(data.platforms || []);
-      setThroughTrains(data.throughTrains || []);
-      setMovementConflicts(data.movementConflicts || []);
-      if (stationTrains.length > 0) {
-        setTrains(stationTrains);
-        setIsFallback(false);
-        setError(null);
-        setLastUpdated(new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
-      } else {
-        setTrains([]);
-        setIsFallback(false);
-        setError(null);
-        setLastUpdated(new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
-      }
+      const plats = data.platforms || [];
+      const thru = data.throughTrains || [];
+      const conf = data.movementConflicts || [];
+      const timestamp = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+      STATION_DATA_CACHE.set(stationCode, {
+        trains: stationTrains,
+        platforms: plats,
+        throughTrains: thru,
+        movementConflicts: conf,
+        lastUpdated: timestamp
+      });
+
+      setPlatforms(plats);
+      setThroughTrains(thru);
+      setMovementConflicts(conf);
+      setTrains(stationTrains);
+      setIsFallback(false);
+      setError(null);
+      setLastUpdated(timestamp);
     } catch (err) {
-      console.warn('[useStationTrains] Station feed unavailable:', err);
+      console.warn('[useStationTrains] Station feed fallback:', err);
       setIsFallback(true);
       setError(err.message || 'Station feed unavailable');
       setLastUpdated(new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
