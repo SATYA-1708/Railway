@@ -4,6 +4,35 @@ import {
   User, Navigation, Ticket, Compass
 } from 'lucide-react';
 
+function IndiaFlag({ className = "w-7 h-4.5" }) {
+  return (
+    <svg viewBox="0 0 900 600" className={`${className} shrink-0 rounded-[3px] shadow-sm border border-slate-300/80 overflow-hidden inline-block`} aria-label="Flag of India">
+      <rect width="900" height="200" fill="#FF9933" />
+      <rect y="200" width="900" height="200" fill="#FFFFFF" />
+      <rect y="400" width="900" height="200" fill="#138808" />
+      <circle cx="450" cy="300" r="80" fill="none" stroke="#000080" strokeWidth="7" />
+      <circle cx="450" cy="300" r="16" fill="#000080" />
+      {Array.from({ length: 24 }).map((_, i) => {
+        const angle = (i * 360) / 24;
+        const rad = (angle * Math.PI) / 180;
+        const x2 = 450 + 80 * Math.cos(rad);
+        const y2 = 300 + 80 * Math.sin(rad);
+        return (
+          <line
+            key={i}
+            x1="450"
+            y1="300"
+            x2={x2}
+            y2={y2}
+            stroke="#000080"
+            strokeWidth="3.8"
+          />
+        );
+      })}
+    </svg>
+  );
+}
+
 export default function Navbar({
   currentView = 'landing',
   onNavigate = () => {},
@@ -28,30 +57,28 @@ export default function Navbar({
   const passengerNav = (
     <>
       <button onClick={() => { onNavigate('landing'); setMobileOpen(false); }} className={btn(isActive(['landing']))}>
-        <Home className="w-4 h-4" /> Home
+        <Home className="w-4 h-4 text-[#1b56a0]" /> Home
       </button>
-      <button onClick={() => { onNavigate('passenger-search'); setMobileOpen(false); }} className={btn(isActive(['passenger-search', 'passenger-mytrain']))}>
-        <Navigation className="w-4 h-4" /> Track Train
+      <button onClick={() => { onNavigate('passenger-search'); setMobileOpen(false); }} className={btn(isActive(['passenger-search']))}>
+        <Navigation className="w-4 h-4 text-[#1b56a0]" /> Search Trains
       </button>
       <button onClick={() => { onNavigate('live-map'); setMobileOpen(false); }} className={btn(isActive(['live-map']))}>
-        <Compass className="w-4 h-4" /> Live Map
+        <Compass className="w-4 h-4 text-[#0d7a56]" /> Live Map
+      </button>
+      <button onClick={() => { onNavigate('my-journeys'); setMobileOpen(false); }} className={btn(isActive(['my-journeys', 'passenger-mytrain']))}>
+        <Ticket className="w-4 h-4 text-[#1b56a0]" /> My Journeys
+      </button>
+      <button onClick={() => { onNavigate('station-board'); setMobileOpen(false); }} className={btn(isActive(['station-board']))}>
+        <MapPin className="w-4 h-4 text-[#1b56a0]" /> Live Station
       </button>
       <button onClick={() => { onNavigate('pnr-tracker'); setMobileOpen(false); }} className={btn(isActive(['pnr-tracker']))}>
-        <Ticket className="w-4 h-4" /> PNR
+        <Train className="w-4 h-4 text-[#1b56a0]" /> PNR Status
       </button>
-      <button onClick={() => { onNavigate('my-journeys'); setMobileOpen(false); }} className={btn(isActive(['my-journeys']))}>
-        <MapPin className="w-4 h-4" /> My Journeys
-      </button>
-      <button onClick={() => { onNavigate('passenger-alerts'); setMobileOpen(false); }} className={`${btn(isActive(['passenger-alerts']))} relative`}>
-        <Bell className="w-4 h-4" /> Alerts
+      <button onClick={() => { onNavigate('passenger-alerts'); setMobileOpen(false); }} className={`relative ${btn(isActive(['passenger-alerts']))}`}>
+        <Bell className="w-4 h-4 text-[#d97706]" /> Alerts
         {alertCount > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-red-600 text-white text-[9px] font-bold flex items-center justify-center">
-            {alertCount > 9 ? '9+' : alertCount}
-          </span>
+          <span className="w-2 h-2 rounded-full bg-[#d97706] animate-pulse" />
         )}
-      </button>
-      <button onClick={() => { onNavigate('station-display'); setMobileOpen(false); }} className={btn(isActive(['station-display']))}>
-        <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse inline-block mr-1"></span> TV Display
       </button>
     </>
   );
@@ -75,9 +102,7 @@ export default function Navbar({
     <header className="sticky top-0 z-50 bg-white border-b border-[#dce5f0] shadow-[0_1px_0_rgba(24,46,82,0.04)]">
       {/* Government top band */}
       <div className="gov-band px-3 sm:px-6 py-1.5 overflow-hidden flex items-center gap-3">
-        <div className="relative gov-band-tricolor shrink-0">
-          <span></span><span></span><span></span>
-        </div>
+        <IndiaFlag className="w-7 h-4.5" />
         
         {/* Continuous Smooth Scrolling Marquee */}
         <div className="gov-marquee-container flex-1">
@@ -90,7 +115,7 @@ export default function Navbar({
               <strong className="text-[#0d7a56]">Problem Statement 26028:</strong>
               <span>Dynamic Forecast of Expected Time of Arrival (ETA) for Coaching Trains</span>
               <span className="text-[#93a6bf]">|</span>
-              <span>Ministry of Railways, Government of India 🇮🇳</span>
+              <span>Ministry of Railways, Government of India</span>
               <span className="text-[#93a6bf]">|</span>
               <span className="text-emerald-700 font-bold">● Live NTES & EPIS Satellite Telemetry Engine Active</span>
             </span>
@@ -103,7 +128,8 @@ export default function Navbar({
               <strong className="text-[#0d7a56]">Problem Statement 26028:</strong>
               <span>Dynamic Forecast of Expected Time of Arrival (ETA) for Coaching Trains</span>
               <span className="text-[#93a6bf]">|</span>
-              <span>Ministry of Railways, Government of India 🇮🇳</span>
+              <span>Ministry of Railways, Government of India</span>
+              <span className="text-[#93a6bf]">|</span>
               <span className="text-emerald-700 font-bold">● Live NTES & EPIS Satellite Telemetry Engine Active</span>
             </span>
           </div>
@@ -114,23 +140,33 @@ export default function Navbar({
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-4">
 
-          {/* Logo */}
+          {/* Redesigned Premium Brand Logo */}
           <button
             onClick={() => onNavigate(isStaffLoggedIn && isStaffPortal ? 'staff-portal' : 'landing')}
-            className="flex items-center gap-2.5 select-none shrink-0 group"
+            className="flex items-center gap-3 select-none shrink-0 group transition-all text-left cursor-pointer"
           >
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#1b56a0] to-[#2f6db3] flex items-center justify-center shadow-sm">
-              <Train className="w-4 h-4 text-white" />
+            <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-[#0e2a4a] via-[#1b56a0] to-[#2563eb] p-[1.5px] shadow-sm group-hover:shadow-md transition-shadow">
+              <div className="w-full h-full rounded-[10px] bg-gradient-to-br from-[#0c2440] to-[#154684] flex items-center justify-center border border-white/20">
+                <Train className="w-5 h-5 text-white group-hover:scale-105 transition-transform duration-200" />
+              </div>
+              <span className="absolute -bottom-0.5 -right-0.5 flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 border border-white" />
+              </span>
             </div>
-            <div className="text-left leading-none">
-              <span className="font-display font-bold text-[17px] text-[#14253d] tracking-tight block">
-                Rail<span className="text-[#1b56a0]">Flow</span>
-                <span className="text-[#93a6bf] font-light mx-1">|</span>
-                <span className="text-[11px] text-[#51678a] font-semibold tracking-normal">AI</span>
-              </span>
-              <span className="block text-[9px] text-[#93a6bf] font-medium tracking-[0.14em] uppercase mt-1">
-                Passenger Services Portal
-              </span>
+
+            <div className="flex flex-col justify-center">
+              <div className="flex items-center gap-1.5 leading-none">
+                <span className="font-display font-extrabold text-[19px] tracking-tight text-[#0f2342] group-hover:text-[#1b56a0] transition-colors">
+                  Rail<span className="text-[#1b56a0]">Flow</span>
+                </span>
+                <span className="px-1.5 py-0.5 text-[9px] font-black tracking-wider bg-gradient-to-r from-[#1b56a0] to-[#0284c7] text-white rounded font-mono shadow-xs uppercase">
+                  AI
+                </span>
+              </div>
+              <p className="text-[10px] font-bold text-[#64748b] tracking-[0.06em] uppercase mt-1 leading-none">
+                Indian Railways Live ETA
+              </p>
             </div>
           </button>
 
