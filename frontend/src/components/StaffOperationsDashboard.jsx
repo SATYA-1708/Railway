@@ -604,14 +604,16 @@ export default function StaffOperationsDashboard({
 
                       {/* Action Links */}
                       <div className="col-span-1 flex items-center justify-end gap-1.5">
-                        <button
-                          type="button"
-                          onClick={() => onSelectTrainForEta?.(t)}
-                          className="px-2 py-1 rounded bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/40 text-cyan-300 text-[10px] font-bold transition-colors"
-                          title="Explain Why This ETA Changed"
-                        >
-                          Why Changed?
-                        </button>
+                        {delay > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => onSelectTrainForEta?.(t)}
+                            className="px-2 py-1 rounded bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 text-[10px] font-bold transition-colors whitespace-nowrap"
+                            title="Explain Why This Train Is Delayed"
+                          >
+                            Delay Reason
+                          </button>
+                        )}
                         <button
                           type="button"
                           onClick={() => onSelectTrainForDetails?.(t)}

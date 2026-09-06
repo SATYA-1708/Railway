@@ -71,6 +71,15 @@ export default function App() {
     } catch {}
   }, [alertSubscriptions]);
 
+  // Global scroll-to-top whenever view, tab, or selected train changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    const rootEl = document.getElementById('root');
+    if (rootEl) rootEl.scrollTop = 0;
+  }, [currentView, staffTab, selectedTrain, staffSelectedTrain]);
+
   // Tracked trains: journeys + alert subscriptions + recent searches + selected train
   const trackedTrainNumbers = useMemo(() => {
     const nums = new Set();
@@ -326,6 +335,9 @@ export default function App() {
 
   const handleStaffLoginSuccess = (userData) => {
     setIsStaffLoggedIn(true);
+    setStaffTab('dashboard');
+    setStaffSelectedTrain(null);
+    setStaffWhatIfTrain(null);
     if (userData) {
       setAuthenticatedStaffUser(userData);
       if (userData.stationCode) {
@@ -333,19 +345,30 @@ export default function App() {
       }
     }
     setCurrentView('staff-portal');
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
   };
 
   const handleStaffLogout = () => {
     setIsStaffLoggedIn(false);
     setAuthenticatedStaffUser(null);
+    setStaffTab('dashboard');
+    setStaffSelectedTrain(null);
+    setStaffWhatIfTrain(null);
     localStorage.removeItem('railflow_token');
     localStorage.removeItem('railflow_user');
     setCurrentView('landing');
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
   };
 
   const navigate = (view) => {
     setCurrentView(view);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
   };
 
   const isStaffView = ['staff-login', 'staff-portal'].includes(currentView);
@@ -432,8 +455,12 @@ export default function App() {
           )}
 
           {/* 2D. STATION DIGITAL DISPLAY BOARD MODE */}
-          {currentView === 'station-display' && (
-            <StationDisplayBoard />
+          {(currentView === 'station-display' || currentView === 'station-board' || currentView === 'station-live') && (
+            <StationDisplayBoard
+              onSelectTrain={(train) => {
+                if (train) handleSelectTrain(train);
+              }}
+            />
           )}
 
           {/* 3. TRACK TRAIN (Live Tracking View) */}

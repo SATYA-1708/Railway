@@ -28,12 +28,12 @@ const LIVE_STATS = [
 ];
 
 const SHOWCASE_STOPS = [
-  { code: 'NDLS', time: '16:10', delay: 0, done: true },
-  { code: 'AGC', time: '17:57', delay: 1, done: true },
-  { code: 'GWL', time: '19:58', delay: 2, done: true },
-  { code: 'JHS', time: '21:40', delay: 2, done: false, next: true },
-  { code: 'BPL', time: '00:05', delay: 3, done: false },
-  { code: 'RKP', time: '00:40', delay: 0, done: false },
+  { code: 'NDLS', name: 'New Delhi', time: '06:00', delay: 0, done: true },
+  { code: 'ALJN', name: 'Aligarh Jn', time: '07:25', delay: 0, done: true },
+  { code: 'CNB', name: 'Kanpur Ctrl', time: '10:08', delay: 1, done: true },
+  { code: 'PRYJ', name: 'Prayagraj Jn', time: '12:10', delay: 2, done: false, next: true },
+  { code: 'MZP', name: 'Mirzapur', time: '13:12', delay: 1, done: false },
+  { code: 'BSB', name: 'Varanasi Jn', time: '14:00', delay: 0, done: false },
 ];
 
 export default function LandingPage({ onCheckTrain, onStaffLogin: _onStaffLogin, onSelectTrain, trains = [], savedJourneys = [], loading = false }) {
@@ -449,29 +449,72 @@ export default function LandingPage({ onCheckTrain, onStaffLogin: _onStaffLogin,
         <div className="px-6 sm:px-10 pt-7 pb-5">
           <div className="flex items-center justify-between mb-6 flex-wrap gap-2">
             <div className="flex items-center gap-3">
-              <span className="portal-tag tnum text-sm">12002</span>
-              <span className="text-base font-bold text-[#14253d]">Bhopal Shatabdi</span>
+              <span className="portal-tag tnum text-sm font-bold bg-[#e9f1fa] text-[#1b56a0] border border-[#c7dbf1]">22436</span>
+              <div className="flex items-center gap-2">
+                <span className="text-base font-bold text-[#14253d]">Vande Bharat Express</span>
+                <span className="text-xs text-[#51678a] font-medium hidden sm:inline">(New Delhi ➔ Varanasi)</span>
+              </div>
             </div>
             <div className="text-right">
-              <p className="text-[10px] text-[#6b7f99] uppercase tracking-[0.14em]">Next arrival · Jhansi Jn</p>
+              <p className="text-[10px] text-[#6b7f99] uppercase tracking-[0.14em] font-semibold">Next arrival · Prayagraj Jn</p>
               <p className="text-xl font-display font-bold text-[#14253d] tnum leading-tight">
-                21:40 <span className="text-[#b45309] text-xs font-semibold">+2m</span>
+                12:10 <span className="text-[#b45309] text-xs font-semibold">+2m</span>
               </p>
             </div>
           </div>
 
-          <div className="relative">
-            <div className="h-[2px] rounded bg-gradient-to-r from-[#c9d6e5] via-[#2f6db3] to-[#c9d6e5]" />
-            <div className="relative flex justify-between -mt-[9px]">
+          <div className="relative pt-6 pb-2">
+            {/* Base Gray Track */}
+            <div className="h-[3px] rounded-full bg-[#d9e2ed] w-full" />
+            
+            {/* Active Blue Progress Track (covered distance up to current train position) */}
+            <div 
+              className="absolute top-6 left-0 h-[3px] rounded-full bg-gradient-to-r from-[#1b56a0] via-[#2f6db3] to-[#38bdf8] transition-all duration-500" 
+              style={{ width: '52%' }} 
+            />
+
+            {/* Simple & Clean Live Train Marker */}
+            <div 
+              className="absolute top-6 left-[52%] -translate-x-1/2 -translate-y-1/2 z-20 flex items-center justify-center pointer-events-none"
+              title="Live Train Position: En Route"
+            >
+              <span className="animate-ping absolute inline-flex h-7 w-7 rounded-full bg-[#1b56a0] opacity-25" />
+              <div className="relative w-6 h-6 rounded-full bg-[#1b56a0] text-white shadow-md flex items-center justify-center border-2 border-white ring-2 ring-[#1b56a0]/20">
+                <Train className="w-3 h-3 text-white" />
+              </div>
+            </div>
+
+            <div className="relative flex justify-between -mt-[10px]">
               {SHOWCASE_STOPS.map((s) => (
                 <div key={s.code} className="flex flex-col items-center w-0 relative">
-                  <span className={`w-3.5 h-3.5 rounded-full border-2 bg-white ${
-                    s.done ? 'border-[#93a6bf]' : s.next ? 'border-[#2f6db3] bg-[#e9f1fa] shadow-[0_0_0_4px_rgba(47,109,179,0.15)]' : 'border-[#c9d6e5]'
-                  }`} />
-                  <div className="absolute top-6 flex flex-col items-center">
-                    <span className={`text-[11px] font-bold font-mono ${s.next ? 'text-[#1b56a0]' : 'text-[#51678a]'}`}>{s.code}</span>
-                    <span className="text-[10px] text-[#6b7f99] font-mono tnum">{s.time}</span>
-                    <span className={`text-[10px] font-semibold tnum ${s.delay === 0 ? 'text-[#0d7a56]' : 'text-[#b45309]'}`}>
+                  {/* Station Node Ring */}
+                  <span className={`w-4 h-4 rounded-full border-2 transition-all flex items-center justify-center ${
+                    s.done
+                      ? 'border-[#1b56a0] bg-[#1b56a0] text-white shadow-sm'
+                      : s.next
+                      ? 'border-[#1b56a0] bg-white ring-4 ring-[#1b56a0]/25 shadow-md scale-105'
+                      : 'border-[#c9d6e5] bg-white'
+                  }`}>
+                    {s.done ? (
+                      <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                    ) : s.next ? (
+                      <span className="w-2 h-2 rounded-full bg-[#1b56a0] animate-pulse" />
+                    ) : (
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#cbd5e1]" />
+                    )}
+                  </span>
+
+                  {/* Station Labels */}
+                  <div className="absolute top-7 flex flex-col items-center whitespace-nowrap">
+                    <span className={`text-[11px] font-mono ${s.next ? 'text-[#1b56a0] font-extrabold' : 'text-[#51678a] font-bold'}`}>
+                      {s.code}
+                    </span>
+                    <span className="text-[10px] text-[#6b7f99] font-mono tnum font-medium">
+                      {s.time}
+                    </span>
+                    <span className={`text-[10px] font-bold tnum px-1 py-0.5 rounded ${
+                      s.delay === 0 ? 'text-[#0d7a56] bg-emerald-50' : 'text-[#b45309] bg-amber-50'
+                    }`}>
                       {s.delay === 0 ? 'On Time' : `+${s.delay}m`}
                     </span>
                   </div>
@@ -484,29 +527,45 @@ export default function LandingPage({ onCheckTrain, onStaffLogin: _onStaffLogin,
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="rounded-xl p-3.5 bg-[#f7f9fc] border border-[#d9e2ed]">
               <p className="text-[10px] text-[#6b7f99] uppercase tracking-[0.14em] mb-1 font-semibold">Scheduled ETA</p>
-              <p className="text-base font-bold text-[#51678a] font-mono tnum">21:38</p>
+              <p className="text-base font-bold text-[#51678a] font-mono tnum">12:08</p>
               <p className="text-[10px] text-[#93a6bf] mt-0.5">Timetable arrival</p>
             </div>
             <div className="rounded-xl p-3.5 bg-[#f0f6fd] border border-[#d3e2f4]" style={{ boxShadow: 'inset 0 1px 2px rgba(24,46,82,0.04)' }}>
               <p className="text-[10px] text-[#1b56a0] uppercase tracking-[0.14em] mb-1 font-bold">Predicted Dynamic ETA</p>
-              <p className="text-base font-bold text-[#1b56a0] font-mono tnum">21:40</p>
+              <p className="text-base font-bold text-[#1b56a0] font-mono tnum">12:10</p>
               <p className="text-[10px] text-[#6b7f99] mt-0.5">AI recalculated</p>
             </div>
             <div className="rounded-xl p-3.5 bg-[#fdf7ec] border border-[#f3e2b8]">
               <p className="text-[10px] text-[#9a6b0a] uppercase tracking-[0.14em] mb-1 font-bold">Predicted Delay</p>
               <p className="text-base font-bold text-[#b45309] font-mono tnum">+2 min</p>
-              <p className="text-[10px] text-[#9a6b0a] mt-0.5">Heavy traffic ahead</p>
+              <p className="text-[10px] text-[#9a6b0a] mt-0.5">AI dynamic forecast</p>
             </div>
             <div className="rounded-xl p-3.5 bg-[#f0f8f4] border border-[#cfe8d9]">
               <p className="text-[10px] text-[#0d7a56] uppercase tracking-[0.14em] mb-1 font-bold">Confidence Window</p>
-              <p className="text-base font-bold text-[#0d7a56] font-mono tnum">21:38 – 21:44</p>
-              <p className="text-[10px] text-[#0d7a56] mt-0.5">92% confidence</p>
+              <p className="text-base font-bold text-[#0d7a56] font-mono tnum">12:08 – 12:13</p>
+              <p className="text-[10px] text-[#0d7a56] mt-0.5">96% confidence</p>
             </div>
+          </div>
+
+          {/* Why It Is Late */}
+          <div className="mt-3.5 px-4 py-2.5 rounded-xl bg-[#f7f9fc] border border-[#d9e2ed] flex items-center justify-between flex-wrap gap-2 text-xs">
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-[#b45309] flex items-center gap-1.5 shrink-0">
+                <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                Why it is late:
+              </span>
+              <span className="text-[#14253d] font-semibold">
+                Preceding train clearance ahead of Prayagraj Jn (PRYJ)
+              </span>
+            </div>
+            <span className="text-[11px] font-mono text-[#0d7a56] font-semibold bg-[#eaf5ef] px-2 py-0.5 rounded border border-[#cfe8d9]">
+              Speed Normal (130 km/h)
+            </span>
           </div>
         </div>
 
         <div className="border-t border-[#e3ebf4] bg-[#f7f9fc] px-6 py-2.5 text-[11px] font-mono text-[#51678a]">
-          Demonstration model for Bhopal Shatabdi · on live trains, dynamic ETA forecasts update from genuine Indian Railways telemetry.
+          Demonstration model for 22436 Vande Bharat Express · on live trains, dynamic ETA forecasts update from genuine Indian Railways telemetry.
         </div>
       </section>
 

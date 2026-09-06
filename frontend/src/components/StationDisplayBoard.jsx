@@ -117,7 +117,7 @@ export const getInstantStationTrains = (stnCode = 'BZA') => {
   return matched;
 };
 
-export default function StationDisplayBoard() {
+export default function StationDisplayBoard({ onSelectTrain }) {
   const [selectedStation, setSelectedStation] = useState("BZA");
   const [currentStnMeta, setCurrentStnMeta] = useState(POPULAR_STATIONS[0]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -550,9 +550,11 @@ export default function StationDisplayBoard() {
             return (
               <div
                 key={t.number ? `${t.number}-${idx}` : idx}
-                className={`grid grid-cols-12 px-4 py-3.5 items-center text-xs md:text-base font-semibold tracking-wide ${
+                onClick={() => onSelectTrain && onSelectTrain(t)}
+                className={`grid grid-cols-12 px-4 py-3.5 items-center text-xs md:text-base font-semibold tracking-wide cursor-pointer hover:bg-white/[0.08] transition-colors ${
                   idx % 2 === 0 ? 'bg-white/[0.03]' : ''
                 }`}
+                title="Click to view live tracking"
               >
                 <div className="col-span-2 font-black text-cyan-300 font-mono text-sm md:text-lg">
                   #{t.number}

@@ -476,101 +476,104 @@ export default function LiveTrainMap({ trains = [], selectedTrainNumber = null, 
         }
       `}</style>
 
-      {/* Floating Map HUD overlay */}
-      <div className="absolute top-4 left-4 z-[1000] bg-slate-900/90 backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-slate-700/80 shadow-lg flex items-center gap-3">
-        <div className="flex items-center gap-2">
-          <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-          </span>
-          <span className="text-xs font-semibold text-slate-200">Live Indian Railways Telemetry</span>
-        </div>
-        <div className="h-4 w-px bg-slate-700"></div>
-        <span className="text-xs font-mono text-cyan-400">{filteredTrainMarkers.length} Active Train{filteredTrainMarkers.length !== 1 ? 's' : ''}</span>
-      </div>
+      {/* Top Floating Controls Container (Mobile-Optimized & Responsive) */}
+      <div className="absolute top-3 left-3 right-3 sm:top-4 sm:left-4 sm:right-4 z-[1000] flex flex-col gap-2 pointer-events-none">
+        {/* Row 1: Live Status Badge + Search Bar */}
+        <div className="flex items-center justify-between gap-2 w-full">
+          {/* Live Telemetry Pill */}
+          <div className="pointer-events-auto bg-slate-900/90 backdrop-blur-md px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl border border-slate-700/80 shadow-lg flex items-center gap-2 shrink-0">
+            <span className="relative flex h-2 w-2 sm:h-2.5 sm:w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 sm:h-2.5 sm:w-2.5 bg-emerald-500" />
+            </span>
+            <span className="text-[10px] sm:text-xs font-semibold text-slate-200 hidden xs:inline sm:inline">Live Telemetry</span>
+            <div className="h-3 w-px bg-slate-700 hidden xs:block sm:block" />
+            <span className="text-[10px] sm:text-xs font-mono font-bold text-cyan-400">{filteredTrainMarkers.length} Trains</span>
+          </div>
 
-      {/* Floating Search & Filters Control Bar */}
-      <div className="absolute top-4 right-4 z-[1000] flex flex-col sm:flex-row items-end sm:items-center gap-2 max-w-[calc(100%-2rem)]">
-        {/* Search Input with Autocomplete Dropdown */}
-        <div ref={searchBoxRef} className="relative">
-          <form onSubmit={handleSearchSubmit} className="flex items-center gap-1.5">
-            <div className="relative w-44 sm:w-56 bg-slate-900/90 backdrop-blur-md rounded-xl border border-slate-700/80 shadow-lg flex items-center">
-              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setIsSuggestOpen(e.target.value.trim().length > 0);
-                }}
-                onFocus={() => {
-                  if (searchQuery.trim().length > 0) setIsSuggestOpen(true);
-                }}
-                placeholder="Search train no. or name..."
-                className="w-full bg-transparent text-xs text-white placeholder-slate-400 pl-9 pr-7 py-2 rounded-xl focus:outline-none focus:ring-1 focus:ring-cyan-400"
-                style={{ paddingLeft: '2.25rem' }}
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => { setSearchQuery(''); setIsSuggestOpen(false); }}
-                  className="absolute right-2.5 top-2.5 text-slate-400 hover:text-white"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              )}
-            </div>
-            <button
-              type="submit"
-              className="px-2.5 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs rounded-xl shadow-lg transition-all flex items-center gap-1 shrink-0"
-            >
-              <Search className="w-3.5 h-3.5" /> Search
-            </button>
-          </form>
-
-          {/* Autocomplete Dropdown */}
-          {isSuggestOpen && searchSuggestions.length > 0 && (
-            <div className="absolute left-0 right-0 top-full mt-1.5 bg-[#0b1524] border border-cyan-500/30 rounded-xl shadow-2xl z-[1200] overflow-hidden max-h-56 overflow-y-auto divide-y divide-white/10">
-              {searchSuggestions.map((st, idx) => (
-                <button
-                  key={st.number || idx}
-                  type="button"
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    handleSelectSearchedTrain(st);
+          {/* Search Input with Autocomplete Dropdown */}
+          <div ref={searchBoxRef} className="pointer-events-auto relative flex-1 max-w-[200px] xs:max-w-[240px] sm:max-w-xs">
+            <form onSubmit={handleSearchSubmit} className="flex items-center gap-1">
+              <div className="relative flex-1 bg-slate-900/90 backdrop-blur-md rounded-xl border border-slate-700/80 shadow-lg flex items-center">
+                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setIsSuggestOpen(e.target.value.trim().length > 0);
                   }}
-                  className="w-full px-3 py-2 text-left text-xs text-slate-200 hover:bg-cyan-500/15 hover:text-white transition-colors flex items-center justify-between group"
-                >
-                  <div className="truncate pr-2">
-                    <span className="font-mono font-bold text-cyan-400 mr-2">#{st.number}</span>
-                    <span className="font-medium text-white">{st.name}</span>
-                  </div>
-                  <ChevronRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-cyan-400 shrink-0" />
-                </button>
-              ))}
-            </div>
-          )}
+                  onFocus={() => {
+                    if (searchQuery.trim().length > 0) setIsSuggestOpen(true);
+                  }}
+                  placeholder="Search train..."
+                  className="w-full bg-transparent text-xs text-white placeholder-slate-400 pl-8 pr-6 py-1.5 sm:py-2 rounded-xl focus:outline-none focus:ring-1 focus:ring-cyan-400"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => { setSearchQuery(''); setIsSuggestOpen(false); }}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+              </div>
+              <button
+                type="submit"
+                className="px-2.5 py-1.5 sm:py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs rounded-xl shadow-lg transition-all flex items-center gap-1 shrink-0"
+                title="Search"
+              >
+                <Search className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Search</span>
+              </button>
+            </form>
+
+            {/* Autocomplete Dropdown */}
+            {isSuggestOpen && searchSuggestions.length > 0 && (
+              <div className="absolute left-0 right-0 top-full mt-1.5 bg-[#0b1524] border border-cyan-500/30 rounded-xl shadow-2xl z-[1200] overflow-hidden max-h-56 overflow-y-auto divide-y divide-white/10">
+                {searchSuggestions.map((st, idx) => (
+                  <button
+                    key={st.number || idx}
+                    type="button"
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      handleSelectSearchedTrain(st);
+                    }}
+                    className="w-full px-3 py-2 text-left text-xs text-slate-200 hover:bg-cyan-500/15 hover:text-white transition-colors flex items-center justify-between group"
+                  >
+                    <div className="truncate pr-2">
+                      <span className="font-mono font-bold text-cyan-400 mr-2">#{st.number}</span>
+                      <span className="font-medium text-white">{st.name}</span>
+                    </div>
+                    <ChevronRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-cyan-400 shrink-0" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Delay Filters */}
-        <div className="bg-slate-900/90 backdrop-blur-md p-1 rounded-xl border border-slate-700/80 shadow-lg flex items-center gap-1 text-[11px]">
+        {/* Row 2: Delay Filters Tabs (Horizontally Scrollable on Mobile) */}
+        <div className="pointer-events-auto self-start sm:self-end bg-slate-900/90 backdrop-blur-md p-1 rounded-xl border border-slate-700/80 shadow-lg flex items-center gap-1 text-[10px] sm:text-[11px] overflow-x-auto max-w-full">
           {[
             { key: 'all', label: 'All' },
-            { key: 'ontime', label: 'On Time (≤5m)', dot: 'bg-emerald-500' },
-            { key: 'moderate', label: 'Moderate (6-20m)', dot: 'bg-amber-500' },
-            { key: 'delayed', label: 'Delayed (>20m)', dot: 'bg-rose-500' },
+            { key: 'ontime', label: 'On Time', sub: '≤5m', dot: 'bg-emerald-500' },
+            { key: 'moderate', label: 'Moderate', sub: '6-20m', dot: 'bg-amber-500' },
+            { key: 'delayed', label: 'Delayed', sub: '>20m', dot: 'bg-rose-500' },
           ].map(f => (
             <button
               key={f.key}
               onClick={() => setDelayFilter(f.key)}
-              className={`px-2.5 py-1 rounded-lg font-semibold transition-all flex items-center gap-1.5 ${
+              className={`px-2 sm:px-2.5 py-1 rounded-lg font-semibold transition-all flex items-center gap-1 sm:gap-1.5 whitespace-nowrap shrink-0 ${
                 delayFilter === f.key
                   ? 'bg-cyan-500 text-slate-950 font-bold shadow-sm'
                   : 'text-slate-300 hover:text-white hover:bg-slate-800'
               }`}
             >
               {f.dot && <span className={`w-1.5 h-1.5 rounded-full ${f.dot}`} />}
-              {f.label}
+              <span>{f.label}</span>
+              {f.sub && <span className="text-[9px] opacity-75 hidden sm:inline">({f.sub})</span>}
             </button>
           ))}
         </div>
@@ -578,10 +581,10 @@ export default function LiveTrainMap({ trains = [], selectedTrainNumber = null, 
 
       {/* Selected Train Detail Floating Panel */}
       {selectedMapTrain && (
-        <div className="absolute bottom-4 left-4 z-[1000] bg-slate-900/95 backdrop-blur-md p-4 rounded-xl border border-cyan-500/40 shadow-2xl max-w-sm w-[calc(100%-2rem)] sm:w-80 text-white space-y-3">
-          <div className="flex items-start justify-between gap-2 border-b border-slate-800 pb-2.5">
-            <div>
-              <div className="flex items-center gap-2">
+        <div className="absolute bottom-3 left-3 right-3 sm:left-4 sm:right-auto sm:w-84 z-[1000] bg-slate-900/95 backdrop-blur-md p-3.5 sm:p-4 rounded-xl border border-cyan-500/40 shadow-2xl text-white space-y-2.5 sm:space-y-3">
+          <div className="flex items-start justify-between gap-2 border-b border-slate-800 pb-2">
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-mono font-bold text-xs bg-cyan-500/20 text-cyan-300 px-2 py-0.5 rounded border border-cyan-500/30">
                   #{selectedMapTrain.number}
                 </span>
@@ -591,55 +594,55 @@ export default function LiveTrainMap({ trains = [], selectedTrainNumber = null, 
                   {selectedMapTrain.delay <= 0 ? 'ON TIME' : `+${selectedMapTrain.delay}m LATE`}
                 </span>
               </div>
-              <h3 className="text-sm font-bold text-slate-100 mt-1 truncate">{selectedMapTrain.name}</h3>
+              <h3 className="text-xs sm:text-sm font-bold text-slate-100 mt-1 truncate">{selectedMapTrain.name}</h3>
             </div>
             <button
               onClick={() => setSelectedMapTrain(null)}
-              className="text-slate-400 hover:text-white p-1"
+              className="text-slate-400 hover:text-white p-1 shrink-0"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 text-xs">
+          <div className="grid grid-cols-2 gap-1.5 sm:gap-2 text-xs">
             <div className="bg-slate-950/60 p-2 rounded-lg border border-slate-800">
-              <span className="text-[10px] text-slate-400 block">Current Location</span>
-              <span className="font-semibold text-slate-200 truncate block">{selectedMapTrain.locName || 'In Transit'}</span>
+              <span className="text-[9px] sm:text-[10px] text-slate-400 block">Current Location</span>
+              <span className="font-semibold text-slate-200 truncate block text-[11px] sm:text-xs">{selectedMapTrain.locName || 'In Transit'}</span>
             </div>
             <div className="bg-slate-950/60 p-2 rounded-lg border border-slate-800">
-              <span className="text-[10px] text-slate-400 block">Speed</span>
-              <span className="font-mono font-bold text-emerald-400">{selectedMapTrain.speed} km/h</span>
+              <span className="text-[9px] sm:text-[10px] text-slate-400 block">Speed</span>
+              <span className="font-mono font-bold text-emerald-400 text-[11px] sm:text-xs">{selectedMapTrain.speed} km/h</span>
             </div>
             <div className="bg-slate-950/60 p-2 rounded-lg border border-slate-800">
-              <span className="text-[10px] text-slate-400 block">Next Stop</span>
-              <span className="font-semibold text-slate-200 truncate block">{selectedMapTrain.nextStation || '—'}</span>
+              <span className="text-[9px] sm:text-[10px] text-slate-400 block">Next Stop</span>
+              <span className="font-semibold text-slate-200 truncate block text-[11px] sm:text-xs">{selectedMapTrain.nextStation || '—'}</span>
             </div>
             <div className="bg-slate-950/60 p-2 rounded-lg border border-slate-800">
-              <span className="text-[10px] text-slate-400 block">Dynamic ETA</span>
-              <span className="font-mono font-bold text-amber-400">{selectedMapTrain.eta}</span>
+              <span className="text-[9px] sm:text-[10px] text-slate-400 block">Dynamic ETA</span>
+              <span className="font-mono font-bold text-amber-400 text-[11px] sm:text-xs">{selectedMapTrain.eta}</span>
             </div>
           </div>
 
           <div className="flex items-center justify-between text-xs pt-1">
-            <span className="text-slate-400">Berthing: <strong className="text-cyan-300 font-mono font-bold">PF {selectedMapTrain.assignedPlatform || 1}</strong></span>
+            <span className="text-slate-400 text-[11px] sm:text-xs">Berthing: <strong className="text-cyan-300 font-mono font-bold">PF {selectedMapTrain.assignedPlatform || 1}</strong></span>
             <button
               type="button"
               onClick={() => {
                 if (onSelectTrain) onSelectTrain(selectedMapTrain);
               }}
-              className="px-3 py-1.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold rounded-lg text-xs transition-all shadow flex items-center gap-1.5"
+              className="px-2.5 sm:px-3 py-1.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold rounded-lg text-[11px] sm:text-xs transition-all shadow flex items-center gap-1.5"
             >
-              <Activity className="w-3.5 h-3.5" /> Track This Train <ArrowRight className="w-3.5 h-3.5" />
+              <Activity className="w-3.5 h-3.5" /> Track Train <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
       )}
 
-      {/* Map Legend */}
-      <div className="absolute bottom-4 right-4 z-[1000] bg-slate-900/90 backdrop-blur-md px-3 py-2 rounded-xl border border-slate-700/80 text-[11px] flex items-center gap-3 text-slate-300">
-        <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> On Time (≤5m)</div>
-        <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Moderate (6-20m)</div>
-        <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Delayed (&gt;20m)</div>
+      {/* Map Legend (Desktop/Tablet only to avoid mobile screen collision) */}
+      <div className="absolute bottom-4 right-4 z-[990] bg-slate-900/90 backdrop-blur-md px-3 py-2 rounded-xl border border-slate-700/80 text-[11px] hidden md:flex items-center gap-3 text-slate-300">
+        <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> On Time (≤5m)</div>
+        <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> Moderate (6-20m)</div>
+        <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-rose-500" /> Delayed (&gt;20m)</div>
       </div>
 
       {loading && (
